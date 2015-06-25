@@ -57,6 +57,11 @@ namespace Cackhand.Core
             Console.ForegroundColor = ConsoleColor.Cyan;
             ConsoleUtils.WriteTextAtCenter(string.Format("Today's high score: {0}", highScore), Console.WindowHeight - 2);
 
+            Console.ForegroundColor = ConsoleColor.DarkGray;
+            string version = string.Format("v{0}", Cackhand.Version);
+            ConsoleUtils.WriteTextAt(version, Console.WindowWidth - 1 - version.Length, Console.WindowHeight - 2);
+            ConsoleUtils.SetCursor(0, 0);
+
             Console.ForegroundColor = ConsoleColor.White;
         }
     }

@@ -30,7 +30,7 @@ namespace Cackhand.Core
         private long averageReactionTime;
         private long fastestReactionTime;
         private long totalReactionTime;
-        private ConsoleColor primaryColour;
+        private ConsoleColor primaryColour = ConsoleColor.DarkCyan;
 
         public CackhandGame(IStateManager stateManager)
         {
@@ -40,7 +40,6 @@ namespace Cackhand.Core
         public void Initialise()
         {
             Console.Clear();
-            primaryColour = ConsoleColor.DarkCyan;
             Console.ForegroundColor = primaryColour;
             frameCounter = 0;
             roundsPlayed = 0;
@@ -69,9 +68,7 @@ namespace Cackhand.Core
                 }
 
                 foreach (var character in characters)
-                {
                     character.Draw(primaryColour);
-                }
             }
             else if(timing)
             {
@@ -139,16 +136,16 @@ namespace Cackhand.Core
         private void ShowGameStats()
         {
             string clear = new string(' ', Console.WindowWidth);
-            ConsoleUtils.WriteTextAt(clear, 0, Console.WindowHeight - 1);
+            ConsoleUtils.WriteTextAt(clear, 0, Console.WindowHeight - 2);
 
             string statText = string.Format("Average: {0}", averageReactionTime);
-            ConsoleUtils.WriteTextAt(statText, 1, Console.WindowHeight - 1);
+            ConsoleUtils.WriteTextAt(statText, 1, Console.WindowHeight - 2);
 
             statText = string.Format("Last: {0}", lastReactionTime);
-            ConsoleUtils.WriteTextAtCenter(statText, Console.WindowHeight - 1);
+            ConsoleUtils.WriteTextAtCenter(statText, Console.WindowHeight - 2);
 
             statText = string.Format("Fastest: {0}", fastestReactionTime);
-            ConsoleUtils.WriteTextAt(statText, Console.WindowWidth - 1 - statText.Length, Console.WindowHeight - 1);
+            ConsoleUtils.WriteTextAt(statText, Console.WindowWidth - 1 - statText.Length, Console.WindowHeight - 2);
 
         }
 
@@ -162,7 +159,7 @@ namespace Cackhand.Core
             string bottomBorder = new string('-', Console.WindowWidth);
 
             ConsoleUtils.WriteTextAt(topBorder, 0, 2);
-            ConsoleUtils.WriteTextAt(bottomBorder, 0, Console.WindowHeight - 2);
+            ConsoleUtils.WriteTextAt(bottomBorder, 0, Console.WindowHeight - 3);
         }
 
         private void ShowScore()
