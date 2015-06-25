@@ -30,7 +30,7 @@ namespace Cackhand.Core
 
         private void DisplaySummary()
         {
-            ConsoleUtils.WriteTextAtCenter(string.Format("Well done, you scored {0}", score));
+            ConsoleUtils.WriteTextAtCenter(string.Format("  Well done, you scored {0}  ", score));
         }
 
         public void ProcessFrame()

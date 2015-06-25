@@ -1,4 +1,5 @@
-﻿using Cackhand.Framework;
+﻿using Cackhand.Core.GameObjects;
+using Cackhand.Framework;
 using Cackhand.Utilities;
 using System;
 using System.Collections.Generic;
@@ -12,11 +13,13 @@ namespace Cackhand.Core
     {
         private const int FramesToDisplay = 2;
         private const int NumberOfRounds = 10;
+        private const int NumberOfOnScreenScharacters = 20;
         private char[] gameChars = { 'a', 'b', 'c','d','e','f','g','h','i','j','k','l', 'm',
                                      'n','o','p','q','r','s','t','u','v','w','x','y','z','0','1','2','3','4','5','6','7','8','9' };
-        private char targetChar;
-        private char displayChar;
+        private OnScreenCharacter targetChar;
+        private IList<OnScreenCharacter> characters;
         private long frameCounter;
+        private long nextFrameToGenerateTarget;
         private bool timing;
         private long ticksAtTargetMatched;
         private int roundsPlayed;
@@ -42,10 +45,12 @@ namespace Cackhand.Core
             frameCounter = 0;
             roundsPlayed = 0;
             score = 0;
-            targetChar = GetRandomChar();
+            targetChar = null;
+            characters = new List<OnScreenCharacter>();
             timing = false;
             lastReactionTime = averageReactionTime = totalReactionTime = 0;
             fastestReactionTime = 10000;
+            nextFrameToGenerateTarget = random.Next(250);
         }
 
         public void ProcessFrame()
@@ -55,22 +60,22 @@ namespace Cackhand.Core
 
             if(!timing && frameCounter % FramesToDisplay == 0)
             {
-                displayChar = GetRandomChar();
+                GenerateRandomCharacters();
 
-                if(displayChar == targetChar)
+                if (targetChar != null)
                 {
                     timing = true;
                     ticksAtTargetMatched = System.Environment.TickCount;
-                    Console.ForegroundColor = ConsoleColor.Red;
                 }
 
-                Console.ForegroundColor = (timing) ? ConsoleColor.Red : primaryColour;
-                ConsoleUtils.WriteTextAtCenter(displayChar.ToString());
-                Console.ForegroundColor = primaryColour;
+                foreach (var character in characters)
+                {
+                    character.Draw(primaryColour);
+                }
             }
             else if(timing)
             {
-                if(KeyboardReader.IsKeyDown((Keys) (byte) char.ToUpper(targetChar)))
+                if(KeyboardReader.IsKeyDown((Keys) (byte) char.ToUpper(targetChar.Character)))
                 {
                     // Calculate score based on duration to hit
                     lastReactionTime = System.Environment.TickCount - ticksAtTargetMatched;
@@ -81,7 +86,8 @@ namespace Cackhand.Core
                     // Switch off timing mode
                     timing = false;
                     frameCounter = 0;
-                    targetChar = GetRandomChar();
+                    nextFrameToGenerateTarget = random.Next(250);
+                    targetChar = null;
                     roundsPlayed++;
 
                     // Update game stats
@@ -104,6 +110,30 @@ namespace Cackhand.Core
             ShowScore();
 
             frameCounter++;
+        }
+
+        private void GenerateRandomCharacters()
+        {
+            bool includeTargetChar = frameCounter >= nextFrameToGenerateTarget;
+
+            foreach (var character in characters)
+                character.Clear();
+
+            characters.Clear();
+
+            for (int i = 0; i < NumberOfOnScreenScharacters; i++)
+            {
+                var newCharacter = new OnScreenCharacter(GetRandomChar());
+                newCharacter.Position = new Point { x = random.Next(Console.WindowWidth), y = random.Next(3, Console.WindowHeight - 3) };
+
+                characters.Add(newCharacter);
+            }
+
+            if (includeTargetChar)
+            {
+                targetChar = characters[random.Next(characters.Count)];
+                targetChar.Target = true;
+            }
         }
 
         private void ShowGameStats()

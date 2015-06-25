@@ -44,6 +44,7 @@
   <ItemGroup>
     <Compile Include="Cackhand.cs" />
     <Compile Include="Core\CackhandGame.cs" />
+    <Compile Include="Core\GameObjects\OnScreenCharacter.cs" />
     <Compile Include="Core\SummaryScreen.cs" />
     <Compile Include="Core\TitleScreen.cs" />
     <Compile Include="Framework\IStateManager.cs" />
