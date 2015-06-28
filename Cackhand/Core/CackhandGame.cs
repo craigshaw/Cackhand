@@ -20,7 +20,6 @@ namespace Cackhand.Core
         private IList<OnScreenCharacter> characters;
         private long frameCounter;
         private long nextFrameToGenerateTarget;
-        private bool timing;
         private long ticksAtTargetMatched;
         private int roundsPlayed;
         private Random random = new Random(Guid.NewGuid().GetHashCode());
@@ -46,7 +45,6 @@ namespace Cackhand.Core
             score = 0;
             targetChar = null;
             characters = new List<OnScreenCharacter>();
-            timing = false;
             lastReactionTime = averageReactionTime = totalReactionTime = 0;
             fastestReactionTime = 10000;
             nextFrameToGenerateTarget = random.Next(250);
@@ -57,20 +55,14 @@ namespace Cackhand.Core
             if (frameCounter == 0)
                 ShowChrome();
 
-            if(!timing && frameCounter % FramesToDisplay == 0)
+            if (frameCounter % FramesToDisplay == 0)
             {
                 GenerateRandomCharacters();
 
-                if (targetChar != null)
-                {
-                    timing = true;
-                    ticksAtTargetMatched = System.Environment.TickCount;
-                }
-
-                foreach (var character in characters)
-                    character.Draw(primaryColour);
+                DrawCharacters();
             }
-            else if(timing)
+            
+            if(targetChar != null)
             {
                 if(KeyboardReader.IsKeyDown((Keys) (byte) char.ToUpper(targetChar.Character)))
                 {
@@ -81,9 +73,9 @@ namespace Cackhand.Core
                         score += 10000 - (int)lastReactionTime;
 
                     // Switch off timing mode
-                    timing = false;
                     frameCounter = 0;
                     nextFrameToGenerateTarget = random.Next(250);
+                    targetChar.Clear();
                     targetChar = null;
                     roundsPlayed++;
 
@@ -109,9 +101,18 @@ namespace Cackhand.Core
             frameCounter++;
         }
 
+        private void DrawCharacters()
+        {
+            foreach (var character in characters)
+                character.Draw(primaryColour);
+
+            if (targetChar != null)
+                targetChar.Draw(primaryColour);
+        }
+
         private void GenerateRandomCharacters()
         {
-            bool includeTargetChar = frameCounter >= nextFrameToGenerateTarget;
+            bool includeTargetChar = targetChar == null && frameCounter >= nextFrameToGenerateTarget;
 
             foreach (var character in characters)
                 character.Clear();
@@ -120,17 +121,23 @@ namespace Cackhand.Core
 
             for (int i = 0; i < NumberOfOnScreenScharacters; i++)
             {
-                var newCharacter = new OnScreenCharacter(GetRandomChar());
-                newCharacter.Position = new Point { x = random.Next(Console.WindowWidth), y = random.Next(3, Console.WindowHeight - 3) };
-
+                var newCharacter = CreateOnScreenCharacter();
                 characters.Add(newCharacter);
             }
 
             if (includeTargetChar)
             {
-                targetChar = characters[random.Next(characters.Count)];
+                targetChar = CreateOnScreenCharacter();
                 targetChar.Target = true;
+                ticksAtTargetMatched = System.Environment.TickCount;
             }
+        }
+
+        private OnScreenCharacter CreateOnScreenCharacter()
+        {
+            var newCharacter = new OnScreenCharacter(GetRandomChar());
+            newCharacter.Position = new Point { x = random.Next(Console.WindowWidth), y = random.Next(3, Console.WindowHeight - 3) };
+            return newCharacter;
         }
 
         private void ShowGameStats()
