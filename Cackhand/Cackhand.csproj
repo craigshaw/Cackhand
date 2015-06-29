@@ -43,6 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Cackhand.cs" />
+    <Compile Include="Core\BoardManager.cs" />
     <Compile Include="Core\CackhandGame.cs" />
     <Compile Include="Core\GameObjects\OnScreenCharacter.cs" />
     <Compile Include="Core\SummaryScreen.cs" />

@@ -30,6 +30,7 @@ namespace Cackhand.Core
         private long fastestReactionTime;
         private long totalReactionTime;
         private ConsoleColor primaryColour = ConsoleColor.DarkCyan;
+        private BoardManager boardManager;
 
         public CackhandGame(IStateManager stateManager)
         {
@@ -48,6 +49,9 @@ namespace Cackhand.Core
             lastReactionTime = averageReactionTime = totalReactionTime = 0;
             fastestReactionTime = 10000;
             nextFrameToGenerateTarget = random.Next(250);
+
+            boardManager = new BoardManager(Console.WindowWidth, Console.WindowHeight - 6, 0, 3);
+            boardManager.ResetBoardPositions();
         }
 
         public void ProcessFrame()
@@ -88,10 +92,7 @@ namespace Cackhand.Core
                     ShowGameStats();
 
                     if(roundsPlayed == NumberOfRounds)
-                    {
-                        // Show final score .. switch state
-                        stateManager.RegisterNextState(new SummaryScreen(stateManager, score));
-                    }
+                        stateManager.RegisterNextState(new SummaryScreen(stateManager, score)); // Show final score
                 }
             }
 
@@ -118,6 +119,7 @@ namespace Cackhand.Core
                 character.Clear();
 
             characters.Clear();
+            boardManager.ResetBoardPositions();
 
             for (int i = 0; i < NumberOfOnScreenScharacters; i++)
             {
@@ -136,7 +138,7 @@ namespace Cackhand.Core
         private OnScreenCharacter CreateOnScreenCharacter()
         {
             var newCharacter = new OnScreenCharacter(GetRandomChar());
-            newCharacter.Position = new Point { x = random.Next(Console.WindowWidth), y = random.Next(3, Console.WindowHeight - 3) };
+            newCharacter.Position = boardManager.GetRandomBoardPosition();
             return newCharacter;
         }
 
