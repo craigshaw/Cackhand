@@ -14,23 +14,21 @@ namespace Cackhand.Core
         private const int FramesToDisplay = 2;
         private const int NumberOfRounds = 10;
         private const int NumberOfOnScreenScharacters = 20;
-        private char[] gameChars = { 'a', 'b', 'c','d','e','f','g','h','i','j','k','l', 'm',
-                                     'n','o','p','q','r','s','t','u','v','w','x','y','z','0','1','2','3','4','5','6','7','8','9' };
-        private OnScreenCharacter targetChar;
-        private IList<OnScreenCharacter> characters;
+        private const ConsoleColor primaryColour = ConsoleColor.DarkCyan;
+
+        private readonly IStateManager stateManager;
+        private BoardManager boardManager;
+        private Random random = new Random(Guid.NewGuid().GetHashCode());
+
         private long frameCounter;
         private long nextFrameToGenerateTarget;
         private long ticksAtTargetMatched;
         private int roundsPlayed;
-        private Random random = new Random(Guid.NewGuid().GetHashCode());
-        private readonly IStateManager stateManager;
         private int score;
         private long lastReactionTime;
         private long averageReactionTime;
         private long fastestReactionTime;
         private long totalReactionTime;
-        private ConsoleColor primaryColour = ConsoleColor.DarkCyan;
-        private BoardManager boardManager;
 
         public CackhandGame(IStateManager stateManager)
         {
@@ -44,14 +42,16 @@ namespace Cackhand.Core
             frameCounter = 0;
             roundsPlayed = 0;
             score = 0;
-            targetChar = null;
-            characters = new List<OnScreenCharacter>();
             lastReactionTime = averageReactionTime = totalReactionTime = 0;
             fastestReactionTime = 10000;
-            nextFrameToGenerateTarget = random.Next(250);
-
-            boardManager = new BoardManager(Console.WindowWidth, Console.WindowHeight - 6, 0, 3);
+            SetNextTargetFrameDelta();
+            boardManager = new BoardManager(Console.WindowWidth, Console.WindowHeight - 6, 0, 3, NumberOfOnScreenScharacters);
             boardManager.ResetBoardPositions();
+        }
+
+        private void SetNextTargetFrameDelta()
+        {
+            nextFrameToGenerateTarget = random.Next(250);
         }
 
         public void ProcessFrame()
@@ -61,14 +61,14 @@ namespace Cackhand.Core
 
             if (frameCounter % FramesToDisplay == 0)
             {
-                GenerateRandomCharacters();
+                GenerateBoardSnapshot();
 
-                DrawCharacters();
+                DrawBoard();
             }
-            
-            if(targetChar != null)
+
+            if (boardManager.Target != null)
             {
-                if(KeyboardReader.IsKeyDown((Keys) (byte) char.ToUpper(targetChar.Character)))
+                if (KeyboardReader.IsKeyDown((Keys)(byte)char.ToUpper(boardManager.Target.Character)))
                 {
                     // Calculate score based on duration to hit
                     lastReactionTime = System.Environment.TickCount - ticksAtTargetMatched;
@@ -78,9 +78,8 @@ namespace Cackhand.Core
 
                     // Switch off timing mode
                     frameCounter = 0;
-                    nextFrameToGenerateTarget = random.Next(250);
-                    targetChar.Clear();
-                    targetChar = null;
+                    SetNextTargetFrameDelta();
+                    boardManager.ClearTarget();
                     roundsPlayed++;
 
                     // Update game stats
@@ -102,44 +101,28 @@ namespace Cackhand.Core
             frameCounter++;
         }
 
-        private void DrawCharacters()
+        private void DrawBoard()
         {
-            foreach (var character in characters)
+            foreach (var character in boardManager.Snapshot)
                 character.Draw(primaryColour);
 
-            if (targetChar != null)
-                targetChar.Draw(primaryColour);
+            if (boardManager.Target != null)
+                boardManager.Target.Draw(primaryColour);
         }
 
-        private void GenerateRandomCharacters()
+        private void GenerateBoardSnapshot()
         {
-            bool includeTargetChar = targetChar == null && frameCounter >= nextFrameToGenerateTarget;
+            bool includeTargetChar = boardManager.Target == null && frameCounter >= nextFrameToGenerateTarget;
 
-            foreach (var character in characters)
-                character.Clear();
+            boardManager.ClearBoard();
 
-            characters.Clear();
-            boardManager.ResetBoardPositions();
-
-            for (int i = 0; i < NumberOfOnScreenScharacters; i++)
-            {
-                var newCharacter = CreateOnScreenCharacter();
-                characters.Add(newCharacter);
-            }
+            boardManager.GenerateNewBoardSnapshot();
 
             if (includeTargetChar)
             {
-                targetChar = CreateOnScreenCharacter();
-                targetChar.Target = true;
+                boardManager.AddTargetToBoard();
                 ticksAtTargetMatched = System.Environment.TickCount;
             }
-        }
-
-        private OnScreenCharacter CreateOnScreenCharacter()
-        {
-            var newCharacter = new OnScreenCharacter(GetRandomChar());
-            newCharacter.Position = boardManager.GetRandomBoardPosition();
-            return newCharacter;
         }
 
         private void ShowGameStats()
@@ -174,11 +157,6 @@ namespace Cackhand.Core
         private void ShowScore()
         {
             ConsoleUtils.WriteTextAt(string.Format("Score: {0}", score), 1, 1);
-        }
-
-        private char GetRandomChar()
-        {
-            return gameChars[random.Next(gameChars.Length)];
         }
 
         private void ShowFrameRate()
