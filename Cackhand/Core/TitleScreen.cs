@@ -20,6 +20,9 @@ namespace Cackhand.Core
 
         public TitleScreen(IStateManager stateManager, int lastScore)
         {
+            if (stateManager == null)
+                throw new ArgumentNullException("stateManager");
+
             this.stateManager = stateManager;
 
             if(lastScore > highScore)
@@ -35,9 +38,7 @@ namespace Cackhand.Core
         {
             // Handle input
             if(KeyboardReader.IsKeyDown(System.Windows.Forms.Keys.Enter))
-            {
                 stateManager.RegisterNextState(new CackhandGame(stateManager));
-            }
         }
 
         private void DisplayTitleScreen()

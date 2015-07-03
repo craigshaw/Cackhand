@@ -9,19 +9,20 @@ namespace Cackhand.Core
 {
     internal class BoardManager
     {
+        private readonly char[] gameChars = { 'a', 'b', 'c','d','e','f','g','h','i','j','k','l', 'm',
+                                     'n','o','p','q','r','s','t','u','v','w','x','y','z','0','1','2','3','4','5','6','7','8','9' };
+
         private IList<Point> availableBoardPositions;
+        private IList<OnScreenCharacter> characters;
+        private OnScreenCharacter targetChar;
+
         private int rows;
         private int columns;
         private int xOffset;
         private int yOffset;
-        private Random random = new Random(Guid.NewGuid().GetHashCode());
 
-        private char[] gameChars = { 'a', 'b', 'c','d','e','f','g','h','i','j','k','l', 'm',
-                                     'n','o','p','q','r','s','t','u','v','w','x','y','z','0','1','2','3','4','5','6','7','8','9' };
-
-        private OnScreenCharacter targetChar;
-        private IList<OnScreenCharacter> characters;
         private int numSpacesToFill;
+        private Random random = new Random(Guid.NewGuid().GetHashCode());
 
         public BoardManager(int rows, int columns, int xOffset, int yOffset, int numSpacesToFill)
         {
@@ -32,7 +33,6 @@ namespace Cackhand.Core
             this.numSpacesToFill = numSpacesToFill;
 
             availableBoardPositions = new List<Point>();
-            targetChar = null;
             characters = new List<OnScreenCharacter>();
         }
 
@@ -46,30 +46,9 @@ namespace Cackhand.Core
             get { return characters;  }
         }
 
-        private void GeneratePositions()
-        {
-            availableBoardPositions.Clear();
-
-            for(int x = 0; x < rows; x++)
-            {
-                for (int y = 0; y < columns; y++)
-                {
-                    availableBoardPositions.Add(new Point() { x = x + xOffset, y = y + yOffset });
-                }
-            }
-        }
-
         public void ResetBoardPositions()
         {
             GeneratePositions();
-        }
-
-        private Point GetRandomBoardPosition()
-        {
-            int idx = random.Next(availableBoardPositions.Count);
-            Point position = availableBoardPositions[idx];
-            availableBoardPositions.Remove(position);
-            return position;
         }
 
         public void ClearTarget()
@@ -89,16 +68,32 @@ namespace Cackhand.Core
 
         public void GenerateNewBoardSnapshot()
         {
-            for (int i = 0; i < numSpacesToFill; i++)
-            {
-                var newCharacter = CreateOnScreenCharacter();
-                characters.Add(newCharacter);
-            }
+            characters = Enumerable.Range(0,numSpacesToFill).Select(i => CreateOnScreenCharacter()).ToList();
         }
 
-        private OnScreenCharacter CreateOnScreenCharacter()
+        public void AddTargetToBoard()
         {
-            var newCharacter = new OnScreenCharacter(GetRandomChar());
+            targetChar = CreateOnScreenCharacter(true);
+        }
+
+        private void GeneratePositions()
+        {
+            availableBoardPositions.Clear();
+
+            availableBoardPositions = Enumerable.Range(0, rows).SelectMany(x => Enumerable.Range(0, columns).Select(y => new Point() { x = x + xOffset, y = y + yOffset })).ToList();
+        }
+
+        private Point GetRandomBoardPosition()
+        {
+            int idx = random.Next(availableBoardPositions.Count);
+            Point position = availableBoardPositions[idx];
+            availableBoardPositions.Remove(position);
+            return position;
+        }
+
+        private OnScreenCharacter CreateOnScreenCharacter(bool isTarget = false)
+        {
+            var newCharacter = new OnScreenCharacter(GetRandomChar(), isTarget);
             newCharacter.Position = GetRandomBoardPosition();
             return newCharacter;
         }
@@ -106,12 +101,6 @@ namespace Cackhand.Core
         private char GetRandomChar()
         {
             return gameChars[random.Next(gameChars.Length)];
-        }
-
-        public void AddTargetToBoard()
-        {
-            targetChar = CreateOnScreenCharacter();
-            targetChar.Target = true;
         }
     }
 }

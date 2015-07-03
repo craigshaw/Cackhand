@@ -25,13 +25,15 @@ namespace Cackhand.Core
         private long ticksAtTargetMatched;
         private int roundsPlayed;
         private int score;
-        private long lastReactionTime;
         private long averageReactionTime;
         private long fastestReactionTime;
         private long totalReactionTime;
 
         public CackhandGame(IStateManager stateManager)
         {
+            if (stateManager == null)
+                throw new ArgumentNullException("stateManager");
+
             this.stateManager = stateManager;
         }
 
@@ -42,16 +44,11 @@ namespace Cackhand.Core
             frameCounter = 0;
             roundsPlayed = 0;
             score = 0;
-            lastReactionTime = averageReactionTime = totalReactionTime = 0;
+            averageReactionTime = totalReactionTime = 0;
             fastestReactionTime = 10000;
             SetNextTargetFrameDelta();
             boardManager = new BoardManager(Console.WindowWidth, Console.WindowHeight - 6, 0, 3, NumberOfOnScreenScharacters);
             boardManager.ResetBoardPositions();
-        }
-
-        private void SetNextTargetFrameDelta()
-        {
-            nextFrameToGenerateTarget = random.Next(250);
         }
 
         public void ProcessFrame()
@@ -71,7 +68,7 @@ namespace Cackhand.Core
                 if (KeyboardReader.IsKeyDown((Keys)(byte)char.ToUpper(boardManager.Target.Character)))
                 {
                     // Calculate score based on duration to hit
-                    lastReactionTime = System.Environment.TickCount - ticksAtTargetMatched;
+                    long lastReactionTime = System.Environment.TickCount - ticksAtTargetMatched;
 
                     if (lastReactionTime < 10000)
                         score += 10000 - (int)lastReactionTime;
@@ -88,9 +85,9 @@ namespace Cackhand.Core
                     if (lastReactionTime < fastestReactionTime)
                         fastestReactionTime = lastReactionTime;
 
-                    ShowGameStats();
+                    ShowGameStats(lastReactionTime);
 
-                    if(roundsPlayed == NumberOfRounds)
+                    if (roundsPlayed == NumberOfRounds)
                         stateManager.RegisterNextState(new SummaryScreen(stateManager, score)); // Show final score
                 }
             }
@@ -99,6 +96,11 @@ namespace Cackhand.Core
             ShowScore();
 
             frameCounter++;
+        }
+
+        private void SetNextTargetFrameDelta()
+        {
+            nextFrameToGenerateTarget = random.Next(250);
         }
 
         private void DrawBoard()
@@ -125,7 +127,7 @@ namespace Cackhand.Core
             }
         }
 
-        private void ShowGameStats()
+        private void ShowGameStats(long lastReactionTime)
         {
             string clear = new string(' ', Console.WindowWidth);
             ConsoleUtils.WriteTextAt(clear, 0, Console.WindowHeight - 2);

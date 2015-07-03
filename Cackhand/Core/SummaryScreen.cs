@@ -17,6 +17,9 @@ namespace Cackhand.Core
 
         public SummaryScreen(IStateManager stateManager, int score)
         {
+            if (stateManager == null)
+                throw new ArgumentNullException("stateManager");
+
             this.stateManager = stateManager;
             this.score = score;
         }
@@ -26,11 +29,6 @@ namespace Cackhand.Core
             initialisedTime = System.Environment.TickCount;
 
             DisplaySummary();
-        }
-
-        private void DisplaySummary()
-        {
-            ConsoleUtils.WriteTextAtCenter(string.Format("  Well done, you scored {0}  ", score));
         }
 
         public void ProcessFrame()
@@ -45,6 +43,11 @@ namespace Cackhand.Core
 
             if (revertToTitles)
                 stateManager.RegisterNextState(new TitleScreen(stateManager, score));
+        }
+
+        private void DisplaySummary()
+        {
+            ConsoleUtils.WriteTextAtCenter(string.Format("  Well done, you scored {0}  ", score));
         }
     }
 }

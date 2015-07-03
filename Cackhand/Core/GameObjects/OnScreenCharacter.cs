@@ -19,9 +19,10 @@ namespace Cackhand.Core.GameObjects
         private Point position;
         private bool isTarget;
 
-        public OnScreenCharacter(char character)
+        public OnScreenCharacter(char character, bool isTarget = false)
         {
             this.character = character;
+            this.isTarget = isTarget;
         }
 
         public Point Position
@@ -35,16 +36,6 @@ namespace Cackhand.Core.GameObjects
             set { character = value; }
         }
 
-        public bool Target
-        {
-            set { isTarget = value; }
-        }
-
-        public override string ToString()
-        {
-            return character.ToString();
-        }
-
         public void Draw(ConsoleColor primaryColour)
         {
             Console.ForegroundColor = (isTarget) ? ConsoleColor.Red : primaryColour;
@@ -55,6 +46,11 @@ namespace Cackhand.Core.GameObjects
         public void Clear()
         {
             ConsoleUtils.WriteTextAt(' '.ToString(), position.x, position.y);
+        }
+
+        public override string ToString()
+        {
+            return character.ToString();
         }
     }
 }
