@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Cackhand.Utilities;
 
 namespace Cackhand.Core
 {
@@ -59,8 +60,7 @@ namespace Cackhand.Core
 
         public void ClearBoard()
         {
-            foreach (var character in characters)
-                character.Clear();
+            characters.ForEach(c => c.Clear());
 
             characters.Clear();
             ResetBoardPositions();

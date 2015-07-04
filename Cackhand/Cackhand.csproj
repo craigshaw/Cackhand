@@ -53,6 +53,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utilities\ConsoleUtils.cs" />
+    <Compile Include="Utilities\Extensions.cs" />
     <Compile Include="Utilities\FrameCounter.cs" />
     <Compile Include="Utilities\KeyboardReader.cs" />
   </ItemGroup>

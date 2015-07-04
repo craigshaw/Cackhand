@@ -105,8 +105,7 @@ namespace Cackhand.Core
 
         private void DrawBoard()
         {
-            foreach (var character in boardManager.Snapshot)
-                character.Draw(primaryColour);
+            boardManager.Snapshot.ForEach(c => c.Draw(primaryColour));
 
             if (boardManager.Target != null)
                 boardManager.Target.Draw(primaryColour);
