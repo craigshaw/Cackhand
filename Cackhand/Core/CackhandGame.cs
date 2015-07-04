@@ -70,8 +70,7 @@ namespace Cackhand.Core
                     // Calculate score based on duration to hit
                     long lastReactionTime = System.Environment.TickCount - ticksAtTargetMatched;
 
-                    if (lastReactionTime < 10000)
-                        score += 10000 - (int)lastReactionTime;
+                    score += CalculateScore((int)lastReactionTime);
 
                     // Switch off timing mode
                     frameCounter = 0;
@@ -96,6 +95,13 @@ namespace Cackhand.Core
             ShowScore();
 
             frameCounter++;
+        }
+
+        private int CalculateScore(int lastReactionTime)
+        {
+            float nominalAverageTimeTaken = 1250; // Guessed average time taken
+            float basicScoreMultiplier = 1000;
+            return (int)((nominalAverageTimeTaken / lastReactionTime) * basicScoreMultiplier);
         }
 
         private void SetNextTargetFrameDelta()
