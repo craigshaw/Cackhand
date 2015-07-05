@@ -11,7 +11,8 @@ namespace Cackhand.Core
     internal class BoardManager
     {
         private readonly char[] gameChars = { 'a', 'b', 'c','d','e','f','g','h','i','j','k','l', 'm',
-                                     'n','o','p','q','r','s','t','u','v','w','x','y','z','0','1','2','3','4','5','6','7','8','9' };
+                                     'n','o','p','q','r','s','t','u','v','w','x','y','z','0','1','2',
+                                     '3','4','5','6','7','8','9' };
 
         private IList<Point> availableBoardPositions;
         private IList<OnScreenCharacter> characters;
@@ -73,7 +74,8 @@ namespace Cackhand.Core
 
         public void AddTargetToBoard()
         {
-            targetChar = CreateOnScreenCharacter(true);
+            if(targetChar == null)
+                targetChar = CreateOnScreenCharacter(true);
         }
 
         private void GeneratePositions()
@@ -85,8 +87,7 @@ namespace Cackhand.Core
 
         private Point GetRandomBoardPosition()
         {
-            int idx = random.Next(availableBoardPositions.Count);
-            Point position = availableBoardPositions[idx];
+            Point position = availableBoardPositions[random.Next(availableBoardPositions.Count)];
             availableBoardPositions.Remove(position);
             return position;
         }

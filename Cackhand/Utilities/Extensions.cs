@@ -11,9 +11,7 @@ namespace Cackhand.Utilities
         public static void ForEach<T>(this IEnumerable<T> collection,  Action<T> operation)
         {
             foreach (var item in collection)
-            {
                 operation(item);
-            }
         }
     }
 }
