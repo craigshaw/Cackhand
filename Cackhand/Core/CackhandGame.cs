@@ -120,13 +120,10 @@ namespace Cackhand.Core
 
         private void GenerateBoardSnapshot()
         {
-            bool includeTargetChar = boardManager.Target == null && frameCounter >= nextFrameToGenerateTarget;
-
             boardManager.ClearBoard();
-
             boardManager.GenerateNewBoardSnapshot();
 
-            if (includeTargetChar)
+            if (boardManager.Target == null && frameCounter >= nextFrameToGenerateTarget)
             {
                 boardManager.AddTargetToBoard();
                 ticksAtTargetMatched = System.Environment.TickCount;
