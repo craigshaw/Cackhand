@@ -34,8 +34,9 @@ namespace Cackhand.Core
             this.yOffset = yOffset;
             this.numSpacesToFill = numSpacesToFill;
 
-            availableBoardPositions = new List<Point>();
             characters = new List<OnScreenCharacter>();
+
+            InitialiseAvaialblePositions();
         }
 
         public OnScreenCharacter Target
@@ -48,13 +49,9 @@ namespace Cackhand.Core
             get { return characters;  }
         }
 
-        public void ResetBoardPositions()
-        {
-            GeneratePositions();
-        }
-
         public void ClearTarget()
         {
+            availableBoardPositions.Add(targetChar.Position);
             targetChar.Clear();
             targetChar = null;
         }
@@ -62,9 +59,8 @@ namespace Cackhand.Core
         public void ClearBoard()
         {
             characters.ForEach(c => c.Clear());
-
+            characters.ForEach(c => availableBoardPositions.Add(c.Position));
             characters.Clear();
-            ResetBoardPositions();
         }
 
         public void GenerateNewBoardSnapshot()
@@ -78,17 +74,10 @@ namespace Cackhand.Core
                 targetChar = CreateOnScreenCharacter(true);
         }
 
-        private void GeneratePositions()
+        private void InitialiseAvaialblePositions()
         {
-            availableBoardPositions.Clear();
-
+            availableBoardPositions = new List<Point>();
             availableBoardPositions = Enumerable.Range(0, rows).SelectMany(x => Enumerable.Range(0, columns).Select(y => new Point() { x = x + xOffset, y = y + yOffset })).ToList();
-
-            if (targetChar != null)
-            {
-                Point targetPos = availableBoardPositions.Single(p => p.x == targetChar.Position.x && p.y == targetChar.Position.y);
-                availableBoardPositions.Remove(targetPos);
-            }
         }
 
         private Point GetRandomBoardPosition()

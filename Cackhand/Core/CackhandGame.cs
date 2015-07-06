@@ -48,7 +48,6 @@ namespace Cackhand.Core
             fastestReactionTime = 10000;
             SetNextTargetFrameDelta();
             boardManager = new BoardManager(Console.WindowWidth, Console.WindowHeight - 6, 0, 3, NumberOfOnScreenScharacters);
-            boardManager.ResetBoardPositions();
         }
 
         public void ProcessFrame()
