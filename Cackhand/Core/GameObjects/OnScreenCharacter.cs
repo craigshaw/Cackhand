@@ -31,6 +31,7 @@ namespace Cackhand.Core.GameObjects
         public Point Position
         {
             set { position = value; }
+            get { return position; }
         }
 
         public char Character

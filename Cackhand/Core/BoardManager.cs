@@ -83,6 +83,12 @@ namespace Cackhand.Core
             availableBoardPositions.Clear();
 
             availableBoardPositions = Enumerable.Range(0, rows).SelectMany(x => Enumerable.Range(0, columns).Select(y => new Point() { x = x + xOffset, y = y + yOffset })).ToList();
+
+            if (targetChar != null)
+            {
+                Point targetPos = availableBoardPositions.Single(p => p.x == targetChar.Position.x && p.y == targetChar.Position.y);
+                availableBoardPositions.Remove(targetPos);
+            }
         }
 
         private Point GetRandomBoardPosition()
