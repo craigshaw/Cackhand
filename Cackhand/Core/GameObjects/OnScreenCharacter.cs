@@ -15,9 +15,12 @@ namespace Cackhand.Core.GameObjects
 
     internal class OnScreenCharacter
     {
+        private readonly ConsoleColor[] availableColours = { ConsoleColor.White, ConsoleColor.Yellow, ConsoleColor.Green, ConsoleColor.Gray, ConsoleColor.DarkYellow, ConsoleColor.DarkGreen,
+                                                           ConsoleColor.DarkGray, ConsoleColor.DarkCyan, ConsoleColor.DarkBlue, ConsoleColor.Cyan, ConsoleColor.Blue};
         private char character;
         private Point position;
         private bool isTarget;
+        private Random random = new Random(Guid.NewGuid().GetHashCode());
 
         public OnScreenCharacter(char character, bool isTarget = false)
         {
@@ -36,11 +39,15 @@ namespace Cackhand.Core.GameObjects
             set { character = value; }
         }
 
-        public void Draw(ConsoleColor primaryColour)
+        public void Draw()
         {
-            Console.ForegroundColor = (isTarget) ? ConsoleColor.Red : primaryColour;
+            Console.ForegroundColor = (isTarget) ? ConsoleColor.Red : PickPrimaryColour();
             ConsoleUtils.WriteTextAt(character.ToString(), position.x, position.y);
-            Console.ForegroundColor = primaryColour;
+        }
+
+        public ConsoleColor PickPrimaryColour()
+        {
+            return availableColours[random.Next(availableColours.Length)];
         }
 
         public void Clear()

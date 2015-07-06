@@ -111,10 +111,12 @@ namespace Cackhand.Core
 
         private void DrawBoard()
         {
-            boardManager.Snapshot.ForEach(c => c.Draw(primaryColour));
+            boardManager.Snapshot.ForEach(c => c.Draw());
 
             if (boardManager.Target != null)
-                boardManager.Target.Draw(primaryColour);
+                boardManager.Target.Draw();
+
+            Console.ForegroundColor = primaryColour;
         }
 
         private void GenerateBoardSnapshot()
