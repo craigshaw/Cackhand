@@ -18,9 +18,10 @@ namespace Cackhand.Core
 
         private readonly IStateManager stateManager;
         private BoardManager boardManager;
+        private FrameCounter frameCounter = new FrameCounter();
         private Random random = new Random(Guid.NewGuid().GetHashCode());
 
-        private long frameCounter;
+        private long frameCount;
         private long nextFrameToGenerateTarget;
         private long ticksAtTargetMatched;
         private int roundsPlayed;
@@ -41,7 +42,7 @@ namespace Cackhand.Core
         {
             Console.Clear();
             Console.ForegroundColor = primaryColour;
-            frameCounter = 0;
+            frameCount = 0;
             roundsPlayed = 0;
             score = 0;
             averageReactionTime = totalReactionTime = 0;
@@ -52,14 +53,14 @@ namespace Cackhand.Core
 
         public void ProcessFrame()
         {
-            if (frameCounter == 0)
+            if (frameCount == 0)
                 ShowChrome();
 
-            if (frameCounter % FramesToDisplay == 0)
+            if (frameCount % FramesToDisplay == 0)
             {
                 GenerateBoardSnapshot();
 
-                DrawBoard();
+                ShowBoard();
             }
 
             if (boardManager.Target != null)
@@ -72,7 +73,7 @@ namespace Cackhand.Core
                     score += CalculateScore((int)lastReactionTime);
 
                     // Switch off timing mode
-                    frameCounter = 0;
+                    frameCount = 0;
                     SetNextTargetFrameDelta();
                     boardManager.ClearTarget();
                     roundsPlayed++;
@@ -93,7 +94,7 @@ namespace Cackhand.Core
             ShowFrameRate();
             ShowScore();
 
-            frameCounter++;
+            frameCount++;
         }
 
         private int CalculateScore(int lastReactionTime)
@@ -108,7 +109,19 @@ namespace Cackhand.Core
             nextFrameToGenerateTarget = random.Next(250);
         }
 
-        private void DrawBoard()
+        private void GenerateBoardSnapshot()
+        {
+            boardManager.ClearBoard();
+            boardManager.GenerateNewBoardSnapshot();
+
+            if (boardManager.Target == null && frameCount >= nextFrameToGenerateTarget)
+            {
+                boardManager.AddTargetToBoard();
+                ticksAtTargetMatched = System.Environment.TickCount;
+            }
+        }
+
+        private void ShowBoard()
         {
             boardManager.Snapshot.ForEach(c => c.Draw());
 
@@ -116,18 +129,6 @@ namespace Cackhand.Core
                 boardManager.Target.Draw();
 
             Console.ForegroundColor = primaryColour;
-        }
-
-        private void GenerateBoardSnapshot()
-        {
-            boardManager.ClearBoard();
-            boardManager.GenerateNewBoardSnapshot();
-
-            if (boardManager.Target == null && frameCounter >= nextFrameToGenerateTarget)
-            {
-                boardManager.AddTargetToBoard();
-                ticksAtTargetMatched = System.Environment.TickCount;
-            }
         }
 
         private void ShowGameStats(long lastReactionTime)
@@ -166,7 +167,7 @@ namespace Cackhand.Core
 
         private void ShowFrameRate()
         {
-            string frameRate = string.Format("FPS: {0}", FrameCounter.CalculateFrameRate());
+            string frameRate = string.Format("FPS: {0}", frameCounter.CalculateFrameRate());
             ConsoleUtils.WriteTextAt(frameRate, Console.WindowWidth - 1 - frameRate.Length, 1);
         }
     }

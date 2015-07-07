@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace Cackhand.Utilities
 {
-    public static class FrameCounter
+    public class FrameCounter
     {
-        private static int lastTick;
-        private static int lastFrameRate;
-        private static int frameRate;
+        private int lastTick;
+        private int lastFrameRate;
+        private int frameRate;
 
-        public static int CalculateFrameRate()
+        public int CalculateFrameRate()
         {
             if(System.Environment.TickCount - lastTick >= 1000)
             {
