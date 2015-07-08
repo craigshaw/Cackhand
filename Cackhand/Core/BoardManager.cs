@@ -82,8 +82,9 @@ namespace Cackhand.Core
 
         private Point GetRandomBoardPosition()
         {
-            Point position = availableBoardPositions[random.Next(availableBoardPositions.Count)];
-            availableBoardPositions.Remove(position);
+            int idx = random.Next(availableBoardPositions.Count);
+            Point position = availableBoardPositions[idx];
+            availableBoardPositions.RemoveAt(idx);
             return position;
         }
 

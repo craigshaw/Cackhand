@@ -9,7 +9,7 @@ namespace Cackhand.Utilities
 {
     public static class KeyboardReader
     {
-        [DllImport("User32.dll")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1060:MovePInvokesToNativeMethodsClass"), DllImport("User32.dll")]
         private static extern short GetAsyncKeyState(System.Windows.Forms.Keys vKey); // Keys enumeration
 
         public static bool IsKeyDown(System.Windows.Forms.Keys vKey)
