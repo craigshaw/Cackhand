@@ -15,8 +15,8 @@ namespace Cackhand.Core.GameObjects
 
     internal class OnScreenCharacter
     {
-        private readonly ConsoleColor[] availableColours = { ConsoleColor.White, ConsoleColor.Yellow, ConsoleColor.Green, ConsoleColor.Gray, ConsoleColor.DarkYellow, ConsoleColor.DarkGreen,
-                                                           ConsoleColor.DarkGray, ConsoleColor.DarkCyan, ConsoleColor.DarkBlue, ConsoleColor.Cyan, ConsoleColor.Blue};
+        private readonly ConsoleColor[] availableColours = { ConsoleColor.White, ConsoleColor.Yellow, ConsoleColor.Green, ConsoleColor.DarkMagenta, ConsoleColor.Gray, ConsoleColor.DarkYellow, ConsoleColor.DarkGreen,
+                                                           ConsoleColor.DarkGray, ConsoleColor.DarkCyan, ConsoleColor.DarkBlue, ConsoleColor.Cyan, ConsoleColor.Blue, ConsoleColor.Magenta };
         private char character;
         private Point position;
         private bool isTarget;

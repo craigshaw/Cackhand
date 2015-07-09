@@ -1,4 +1,5 @@
 ﻿using Cackhand.Core.GameObjects;
+using Cackhand.Core.Themes;
 using Cackhand.Framework;
 using Cackhand.Utilities;
 using System;
@@ -14,7 +15,6 @@ namespace Cackhand.Core
         private const int FramesToDisplay = 2;
         private const int NumberOfRounds = 10;
         private const int NumberOfOnScreenScharacters = 20;
-        private const ConsoleColor primaryColour = ConsoleColor.DarkCyan;
 
         private readonly IStateManager stateManager;
         private BoardManager boardManager;
@@ -41,7 +41,7 @@ namespace Cackhand.Core
         public void Initialise()
         {
             Console.Clear();
-            Console.ForegroundColor = primaryColour;
+            Console.ForegroundColor = Theme.PrimaryColour;
             frameCount = 0;
             roundsPlayed = 0;
             score = 0;
@@ -128,7 +128,7 @@ namespace Cackhand.Core
             if (boardManager.Target != null)
                 boardManager.Target.Draw();
 
-            Console.ForegroundColor = primaryColour;
+            Console.ForegroundColor = Theme.PrimaryColour;
         }
 
         private void ShowGameStats(long lastReactionTime)

@@ -1,4 +1,5 @@
 ﻿using Cackhand.Core;
+using Cackhand.Core.Themes;
 using Cackhand.Framework;
 using Cackhand.Utilities;
 using System;
@@ -24,8 +25,10 @@ namespace Cackhand
         public void Run()
         {
             bool running = true;
-            currentState = new TitleScreen(this, 0);
-            currentState.Initialise();
+
+            BootstrapThemes();
+
+            InitialiseTitleScreen();
 
             do
             {
@@ -54,6 +57,19 @@ namespace Cackhand
             while (Console.KeyAvailable) Console.ReadKey(true);
             Console.WriteLine("Thanks for playing. Press any key to quit...");
             Console.ReadKey(true);
+        }
+
+        private void InitialiseTitleScreen()
+        {
+            currentState = new TitleScreen(this, 0);
+            currentState.Initialise();
+        }
+
+        private void BootstrapThemes()
+        {
+            Theme.PrimaryColour = ConsoleColor.DarkGreen;
+            Theme.SecondaryColour = ConsoleColor.Green;
+            Theme.TertiaryColour = ConsoleColor.DarkGray;
         }
 
         public void RegisterNextState(IState nextState)
