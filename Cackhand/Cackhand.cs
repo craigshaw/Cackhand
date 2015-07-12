@@ -67,9 +67,10 @@ namespace Cackhand
 
         private void BootstrapThemes()
         {
-            Theme.PrimaryColour = ConsoleColor.DarkGreen;
-            Theme.SecondaryColour = ConsoleColor.Green;
-            Theme.TertiaryColour = ConsoleColor.DarkGray;
+            // Add custom themes to the manager
+            ThemeManager.Instance.RegisterTheme(new Theme { PrimaryColour = ConsoleColor.DarkRed, SecondaryColour = ConsoleColor.Red, TertiaryColour = ConsoleColor.DarkMagenta });
+            ThemeManager.Instance.RegisterTheme(new Theme { PrimaryColour = ConsoleColor.DarkCyan, SecondaryColour = ConsoleColor.Cyan, TertiaryColour = ConsoleColor.DarkGray });
+            ThemeManager.Instance.RegisterTheme(new Theme { PrimaryColour = ConsoleColor.DarkBlue, SecondaryColour = ConsoleColor.Blue, TertiaryColour = ConsoleColor.White });
         }
 
         public void RegisterNextState(IState nextState)

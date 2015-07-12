@@ -41,7 +41,7 @@ namespace Cackhand.Core
         public void Initialise()
         {
             Console.Clear();
-            Console.ForegroundColor = Theme.PrimaryColour;
+            Console.ForegroundColor = ThemeManager.Instance.ActiveTheme.PrimaryColour;
             frameCount = 0;
             roundsPlayed = 0;
             score = 0;
@@ -128,7 +128,7 @@ namespace Cackhand.Core
             if (boardManager.Target != null)
                 boardManager.Target.Draw();
 
-            Console.ForegroundColor = Theme.PrimaryColour;
+            Console.ForegroundColor = ThemeManager.Instance.ActiveTheme.PrimaryColour;
         }
 
         private void ShowGameStats(long lastReactionTime)

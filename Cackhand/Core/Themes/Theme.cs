@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace Cackhand.Core.Themes
 {
-    internal static class Theme
+    internal class Theme
     {
-        public static ConsoleColor PrimaryColour { get; set; }
-        public static ConsoleColor SecondaryColour { get; set; }
-        public static ConsoleColor TertiaryColour { get; set; }
+        public ConsoleColor PrimaryColour { get; set; }
+        public ConsoleColor SecondaryColour { get; set; }
+        public ConsoleColor TertiaryColour { get; set; }
     }
 }
