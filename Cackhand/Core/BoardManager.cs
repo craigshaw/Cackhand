@@ -15,7 +15,7 @@ namespace Cackhand.Core
                                      '3','4','5','6','7','8','9' };
 
         private IList<Point> availableBoardPositions;
-        private IList<OnScreenCharacter> characters;
+        private OnScreenCharacter[] characters = {};
         private OnScreenCharacter targetChar;
 
         private int rows;
@@ -34,8 +34,6 @@ namespace Cackhand.Core
             this.yOffset = yOffset;
             this.numSpacesToFill = numSpacesToFill;
 
-            characters = new List<OnScreenCharacter>();
-
             InitialiseAvaialblePositions();
         }
 
@@ -44,7 +42,7 @@ namespace Cackhand.Core
             get { return targetChar;  }
         }
 
-        public IEnumerable<OnScreenCharacter> Snapshot
+        public OnScreenCharacter[] Snapshot
         {
             get { return characters;  }
         }
@@ -60,12 +58,16 @@ namespace Cackhand.Core
         {
             characters.ForEach(c => c.Clear());
             characters.ForEach(c => availableBoardPositions.Add(c.Position));
-            characters.Clear();
         }
 
         public void GenerateNewBoardSnapshot()
         {
-            characters = Enumerable.Range(0,numSpacesToFill).Select(i => CreateOnScreenCharacter()).ToList();
+            characters = GenerateSnapshot().ToArray();
+        }
+
+        private IEnumerable<OnScreenCharacter> GenerateSnapshot()
+        {
+            return Enumerable.Range(0, numSpacesToFill).Select(i => CreateOnScreenCharacter());
         }
 
         public void AddTargetToBoard()
