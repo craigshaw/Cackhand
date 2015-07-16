@@ -4,27 +4,28 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Diagnostics;
 using Cackhand.Utilities;
 
 namespace Cackhand.Core
 {
     internal class BoardManager
     {
-        private readonly char[] gameChars = { 'a', 'b', 'c','d','e','f','g','h','i','j','k','l', 'm',
-                                     'n','o','p','q','r','s','t','u','v','w','x','y','z','0','1','2',
-                                     '3','4','5','6','7','8','9' };
-
-        private IList<Point> availableBoardPositions;
-        private OnScreenCharacter[] characters = {};
-        private OnScreenCharacter targetChar;
 
         private int rows;
         private int columns;
         private int xOffset;
         private int yOffset;
+        int numSpacesToFill;
 
-        private int numSpacesToFill;
-        private Random random = new Random(Guid.NewGuid().GetHashCode());
+        private Frame currentFrame;
+
+        private Queue<Frame> availableFrames;
+
+        private OnScreenCharacter targetOnScreenCharacter;
+
+        private IList<Point> availableBoardPositions;
+
 
         public BoardManager(int rows, int columns, int xOffset, int yOffset, int numSpacesToFill)
         {
@@ -34,72 +35,71 @@ namespace Cackhand.Core
             this.yOffset = yOffset;
             this.numSpacesToFill = numSpacesToFill;
 
-            InitialiseAvaialblePositions();
+            Initialise();
         }
 
-        public OnScreenCharacter Target
+        public void Initialise()
         {
-            get { return targetChar;  }
+            int indexToRemoveTargetLocationFrom;
+
+            InitialiseAvailablePositions(); // Initialise the available board positions
+
+            targetOnScreenCharacter = new OnScreenCharacter(CharacterUtils.GetRandomChar());
+
+            targetOnScreenCharacter.Position = BoardUtilities.GetRandomBoardPosition(availableBoardPositions, out indexToRemoveTargetLocationFrom);
+
+            availableBoardPositions.RemoveAt(indexToRemoveTargetLocationFrom);
+
+            // Generate an initial 10 frames
+            for (int i = 0; i < 10; i++)
+            {
+
+                Debug.WriteLine("BM " + i.ToString());
+                CreateNewFrame();
+            }
         }
 
-        public OnScreenCharacter[] Snapshot
+        public void DrawNextFrame()
         {
-            get { return characters;  }
-        }
+            if (currentFrame != null)
+                currentFrame.ClearFrame(); // Clear the existing frame from the screen
 
-        public void ClearTarget()
-        {
-            availableBoardPositions.Add(targetChar.Position);
-            targetChar.Clear();
-            targetChar = null;
+            if (availableFrames == null || availableFrames.Count == 0)
+                for (int i = 0; i < 10; i++)
+                    Debug.WriteLine("DNF " + i.ToString());
+            CreateNewFrame();
+
+            currentFrame = availableFrames.Dequeue();
+
+            currentFrame.Draw();
         }
 
         public void ClearBoard()
         {
-            characters.ForEach(c => c.Clear());
-            characters.ForEach(c => availableBoardPositions.Add(c.Position));
+            availableFrames.Clear();
+
+            availableFrames = null;
         }
 
-        public void GenerateNewBoardSnapshot()
+        public void CreateNewFrame()
         {
-            characters = GenerateSnapshot().ToArray();
+            if (availableFrames == null)
+                availableFrames = new Queue<Frame>();
+
+            Frame newFrame = new Frame(availableBoardPositions, numSpacesToFill, targetOnScreenCharacter);
+
+            availableFrames.Enqueue(newFrame);
         }
 
-        private IEnumerable<OnScreenCharacter> GenerateSnapshot()
+        public OnScreenCharacter Target
         {
-            return Enumerable.Range(0, numSpacesToFill).Select(i => CreateOnScreenCharacter());
+            get { return this.targetOnScreenCharacter; }
         }
 
-        public void AddTargetToBoard()
-        {
-            if(targetChar == null)
-                targetChar = CreateOnScreenCharacter(true);
-        }
-
-        private void InitialiseAvaialblePositions()
+        private void InitialiseAvailablePositions()
         {
             availableBoardPositions = new List<Point>();
             availableBoardPositions = Enumerable.Range(0, rows).SelectMany(x => Enumerable.Range(0, columns).Select(y => new Point() { x = x + xOffset, y = y + yOffset })).ToList();
-        }
-
-        private Point GetRandomBoardPosition()
-        {
-            int idx = random.Next(availableBoardPositions.Count);
-            Point position = availableBoardPositions[idx];
-            availableBoardPositions.RemoveAt(idx);
-            return position;
-        }
-
-        private OnScreenCharacter CreateOnScreenCharacter(bool isTarget = false)
-        {
-            var newCharacter = new OnScreenCharacter(GetRandomChar(), isTarget);
-            newCharacter.Position = GetRandomBoardPosition();
-            return newCharacter;
-        }
-
-        private char GetRandomChar()
-        {
-            return gameChars[random.Next(gameChars.Length)];
         }
     }
 }
