@@ -56,14 +56,11 @@ namespace Cackhand.Core
             if (frameCount == 0)
                 ShowChrome();
 
-            boardManager.DrawNextFrame();
-
             if (frameCount % FramesToDisplay == 0)
             {
-                //GenerateBoardSnapshot();
-                ticksAtTargetMatched = System.Environment.TickCount;
+                GenerateBoardSnapshot();
 
-                //ShowBoard();
+                ShowBoard();
             }
 
             if (boardManager.Target != null)
@@ -78,8 +75,7 @@ namespace Cackhand.Core
                     // Switch off timing mode
                     frameCount = 0;
                     SetNextTargetFrameDelta();
-                    //boardManager.ClearTarget();
-                    boardManager.ClearBoard();
+                    boardManager.ClearTarget();
                     roundsPlayed++;
 
                     // Update game stats
@@ -92,8 +88,6 @@ namespace Cackhand.Core
 
                     if (roundsPlayed == NumberOfRounds)
                         stateManager.RegisterNextState(new SummaryScreen(stateManager, score)); // Show final score
-                    else
-                        boardManager.Initialise(); // Setup the new game board
                 }
             }
 
@@ -117,22 +111,22 @@ namespace Cackhand.Core
 
         private void GenerateBoardSnapshot()
         {
-            //boardManager.ClearBoard();
-            //boardManager.GenerateNewBoardSnapshot();
+            boardManager.ClearBoard();
+            boardManager.GenerateNewBoardSnapshot();
 
-            //if (boardManager.Target == null && frameCount >= nextFrameToGenerateTarget)
-            //{
-            //    boardManager.AddTargetToBoard();
-            //    ticksAtTargetMatched = System.Environment.TickCount;
-            //}
+            if (boardManager.Target == null && frameCount >= nextFrameToGenerateTarget)
+            {
+                boardManager.AddTargetToBoard();
+                ticksAtTargetMatched = System.Environment.TickCount;
+            }
         }
 
         private void ShowBoard()
         {
-           // boardManager.Snapshot.ForEach(c => c.Draw());
+            boardManager.Snapshot.ForEach(c => c.Draw());
 
-            //if (boardManager.Target != null)
-            //    boardManager.Target.Draw();
+            if (boardManager.Target != null)
+                boardManager.Target.Draw();
 
             Console.ForegroundColor = ThemeManager.Instance.ActiveTheme.PrimaryColour;
         }
