@@ -29,6 +29,7 @@ namespace Cackhand.Core
         private long averageReactionTime;
         private long fastestReactionTime;
         private long totalReactionTime;
+        private float bonusMultiplier;
 
         public CackhandGame(IStateManager stateManager)
         {
@@ -42,10 +43,7 @@ namespace Cackhand.Core
         {
             Console.Clear();
             Console.ForegroundColor = ThemeManager.Instance.ActiveTheme.PrimaryColour;
-            frameCount = 0;
-            roundsPlayed = 0;
-            score = 0;
-            averageReactionTime = totalReactionTime = 0;
+            bonusMultiplier = 1.0f;
             fastestReactionTime = 10000;
             SetNextTargetFrameDelta();
             boardManager = new BoardManager(Console.WindowWidth, Console.WindowHeight - 6, 0, 3, NumberOfOnScreenScharacters);
@@ -59,7 +57,6 @@ namespace Cackhand.Core
             if (frameCount % FramesToDisplay == 0)
             {
                 GenerateBoardSnapshot();
-
                 ShowBoard();
             }
 
@@ -99,9 +96,15 @@ namespace Cackhand.Core
 
         private int CalculateScore(int lastReactionTime)
         {
-            float nominalAverageTimeTaken = 1250; // Guessed average time taken
-            float basicScoreMultiplier = 1000;
-            return (int)((nominalAverageTimeTaken / lastReactionTime) * basicScoreMultiplier);
+            float averageTimeTaken = 1250; // Guessed average time taken
+            float basicScoreMultiplier = 1000; // Score for an 'average' reaction time
+
+            if (lastReactionTime < averageTimeTaken)
+                bonusMultiplier *= 1.1f;
+            else
+                bonusMultiplier = 1.0f;
+
+            return (int)(((averageTimeTaken / lastReactionTime) * basicScoreMultiplier) * bonusMultiplier);
         }
 
         private void SetNextTargetFrameDelta()
@@ -144,7 +147,6 @@ namespace Cackhand.Core
 
             statText = string.Format("Fastest: {0}", fastestReactionTime);
             ConsoleUtils.WriteTextAt(statText, Console.WindowWidth - 1 - statText.Length, Console.WindowHeight - 2);
-
         }
 
         private void ShowChrome()
