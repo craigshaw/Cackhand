@@ -79,7 +79,7 @@ namespace Cackhand.Core
         private void InitialiseAvaialblePositions()
         {
             availableBoardPositions = new List<Point>();
-            availableBoardPositions = Enumerable.Range(0, rows).SelectMany(x => Enumerable.Range(0, columns).Select(y => new Point() { x = x + xOffset, y = y + yOffset })).ToList();
+            availableBoardPositions = Enumerable.Range(0, columns).SelectMany(x => Enumerable.Range(0, rows).Select(y => new Point() { x = x + xOffset, y = y + yOffset })).ToList();
         }
 
         private Point GetRandomBoardPosition()

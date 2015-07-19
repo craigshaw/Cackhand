@@ -46,7 +46,7 @@ namespace Cackhand.Core
             bonusMultiplier = 1.0f;
             fastestReactionTime = 10000;
             SetNextTargetFrameDelta();
-            boardManager = new BoardManager(Console.WindowWidth, Console.WindowHeight - 6, 0, 3, NumberOfOnScreenScharacters);
+            boardManager = new BoardManager(Console.WindowHeight - 6, Console.WindowWidth, 0, 3, NumberOfOnScreenScharacters);
         }
 
         public void ProcessFrame()

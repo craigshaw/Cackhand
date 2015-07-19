@@ -53,7 +53,8 @@ namespace Cackhand.Core.GameObjects
 
         public void Clear()
         {
-            ConsoleUtils.WriteTextAt(' '.ToString(), position.x, position.y);
+            Console.SetCursorPosition(position.x, position.y);
+            Console.Write(' ');
         }
 
         public override string ToString()
