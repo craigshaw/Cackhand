@@ -13,7 +13,7 @@ namespace Cackhand
 {
     internal class Cackhand : IStateManager
     {
-        public const string Version = "0.4";
+        public const string Version = "0.5";
         private const int TARGET_FPS = 25;
 
         private IState currentState;
