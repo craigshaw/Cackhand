@@ -8,7 +8,6 @@ namespace Cackhand.Core.Themes
 {
     internal class ThemeManager
     {
-        private const string DefaultThemeName = "DefaultTheme";
         private int activeThemeIndex;
         private IList<Theme> registeredThemes;
         private static ThemeManager instance;
