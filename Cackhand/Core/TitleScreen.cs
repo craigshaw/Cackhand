@@ -15,10 +15,11 @@ namespace Cackhand.Core
         private const string LogoLine2 = @"  / __|__ _ __| |_| |_  __ _ _ _  __| | |";
         private const string LogoLine3 = @" | (__/ _` / _| / / ' \/ _` | ' \/ _` |_|";
         private const string LogoLine4 = @"  \___\__,_\__|_\_\_||_\__,_|_||_\__,_(_)";
+        private const int InputCooldownFrames = 10;
 
         private readonly IStateManager stateManager;
         private static int highScore = 0;
-        private int toggleCooldown = 0;
+        private int inputCooldown = 0;
 
         public TitleScreen(IStateManager stateManager, int lastScore)
         {
@@ -34,22 +35,33 @@ namespace Cackhand.Core
         public void Initialise()
         {
             DisplayTitleScreen();
+            ResetInputCooldown();
         }
 
         public void ProcessFrame()
         {
-            toggleCooldown--;
+            inputCooldown--;
 
             // Handle input
-            if(KeyboardReader.IsKeyDown(System.Windows.Forms.Keys.Enter))
+            if(KeyIsDownOutsideOfCooldownPeriod(System.Windows.Forms.Keys.Enter))
                 stateManager.RegisterNextState(new CackhandGame(stateManager));
 
-            if (toggleCooldown <= 0 && KeyboardReader.IsKeyDown(System.Windows.Forms.Keys.T))
+            if (KeyIsDownOutsideOfCooldownPeriod(System.Windows.Forms.Keys.T))
             {
-                toggleCooldown = 10;
+                ResetInputCooldown();
                 ThemeManager.Instance.NextTheme();
                 DisplayTitleScreen();
             }
+        }
+
+        private bool KeyIsDownOutsideOfCooldownPeriod(System.Windows.Forms.Keys key)
+        {
+            return inputCooldown <= 0 && KeyboardReader.IsKeyDown(key);
+        }
+
+        private void ResetInputCooldown()
+        {
+            inputCooldown = InputCooldownFrames;
         }
 
         private void DisplayTitleScreen()
