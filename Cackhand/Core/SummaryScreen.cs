@@ -1,10 +1,7 @@
-﻿using Cackhand.Framework;
+﻿using Cackhand.Core.Scores;
+using Cackhand.Framework;
 using Cackhand.Utilities;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Cackhand.Core
 {
@@ -14,6 +11,8 @@ namespace Cackhand.Core
         private readonly IStateManager stateManager;
         private long initialisedTime;
         private int score;
+        private bool requestingPlayerName;
+        private bool revertToTitles;
 
         public SummaryScreen(IStateManager stateManager, int score)
         {
@@ -26,6 +25,9 @@ namespace Cackhand.Core
 
         public void Initialise()
         {
+            if (score > HighScoreTable.Instance.LowestScore)
+                requestingPlayerName = true;
+
             initialisedTime = System.Environment.TickCount;
 
             DisplaySummary();
@@ -33,13 +35,14 @@ namespace Cackhand.Core
 
         public void ProcessFrame()
         {
-            bool revertToTitles = false;
+            if (!requestingPlayerName)
+            {
+                if (System.Environment.TickCount - initialisedTime >= OnScreenDuration)
+                    revertToTitles = true;
 
-            if (System.Environment.TickCount - initialisedTime >= OnScreenDuration)
-                revertToTitles = true;
-
-            if (KeyboardReader.IsKeyDown(System.Windows.Forms.Keys.Enter))
-                revertToTitles = true;
+                if (KeyboardReader.IsKeyDown(System.Windows.Forms.Keys.Enter))
+                    revertToTitles = true;
+            }
 
             if (revertToTitles)
                 stateManager.RegisterNextState(new TitleScreen(stateManager, score));
@@ -47,7 +50,17 @@ namespace Cackhand.Core
 
         private void DisplaySummary()
         {
-            ConsoleUtils.WriteTextAtCenter(string.Format("  Well done, you scored {0}  ", score));
+            ConsoleUtils.WriteTextAtCenter(string.Format("  Well done, you scored {0}  ", score), 9);
+
+            if(requestingPlayerName)
+            {
+                ConsoleUtils.WriteTextAtCenter("   That's made it to the highscore table!   ", 10);
+                ConsoleUtils.WriteTextAtCenter(" What's your name: ", 11);
+                ConsoleUtils.ClearInputBuffer();
+                string name = Console.ReadLine();
+                HighScoreTable.Instance.AddScore(name, score);
+                revertToTitles = true;
+            }
         }
     }
 }

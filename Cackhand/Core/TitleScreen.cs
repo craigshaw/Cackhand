@@ -1,4 +1,5 @@
-﻿using Cackhand.Core.Themes;
+﻿using Cackhand.Core.Scores;
+using Cackhand.Core.Themes;
 using Cackhand.Framework;
 using Cackhand.Utilities;
 using System;
@@ -68,24 +69,45 @@ namespace Cackhand.Core
         {
             Console.Clear();
 
+            // Logo
             Console.ForegroundColor = ThemeManager.Instance.ActiveTheme.PrimaryColour;
             ConsoleUtils.WriteTextAt(LogoLine1, (Console.WindowWidth / 2) - LogoLine1.Length / 2, 1);
             ConsoleUtils.WriteTextAt(LogoLine2, (Console.WindowWidth / 2) - LogoLine2.Length / 2, 2);
             ConsoleUtils.WriteTextAt(LogoLine3, (Console.WindowWidth / 2) - LogoLine3.Length / 2, 3);
             ConsoleUtils.WriteTextAt(LogoLine4, (Console.WindowWidth / 2) - LogoLine4.Length / 2, 4);
 
-            ConsoleUtils.WriteTextAtCenter(string.Format("Today's high score: {0}", highScore), Console.WindowHeight - 2);
-
+            // Strapline
             Console.ForegroundColor = ThemeManager.Instance.ActiveTheme.SecondaryColour;
-            ConsoleUtils.WriteTextAtCenter("Are you a cackhand ... or crackhand?", 10);
-            ConsoleUtils.WriteTextAtCenter("Press enter to play", 11);
+            ConsoleUtils.WriteTextAtCenter("Are you a cackhand ... or crackhand?", 8);
+            ConsoleUtils.WriteTextAtCenter("Press enter to play", 9);
+            ConsoleUtils.WriteTextAtCenter("Strike fast when you see red", 11);
 
-            ConsoleUtils.WriteTextAtCenter("Strike fast when you see red", 14);
+            // Highscores
+            ConsoleUtils.WriteTextAtCenter("Today's high scores:", 15);
+            DisplayHighScores(16);
 
+            // Version
             Console.ForegroundColor = ThemeManager.Instance.ActiveTheme.TertiaryColour;
             string version = string.Format("v{0}", Cackhand.Version);
             ConsoleUtils.WriteTextAt(version, Console.WindowWidth - 1 - version.Length, Console.WindowHeight - 2);
             ConsoleUtils.SetCursor(0, 0);
+        }
+
+        private void DisplayHighScores(int initialYPos)
+        {
+            int yPos = initialYPos;
+
+            foreach(var score in HighScoreTable.Instance.Scores)
+            {
+                string name = score.PlayerName;
+                string scoreStr = score.Score.ToString();
+                string sep = new string('.', 40 - name.Length - scoreStr.Length);
+                StringBuilder sb = new StringBuilder();
+                sb.Append(string.Format("{{0, -{0}}}", name.Length));
+                sb.Append(sep);
+                sb.Append(string.Format("{{1, {0}}}", scoreStr.Length));
+                ConsoleUtils.WriteTextAtCenter(string.Format(sb.ToString(), score.PlayerName, score.Score), yPos++);
+            }
         }
     }
 }

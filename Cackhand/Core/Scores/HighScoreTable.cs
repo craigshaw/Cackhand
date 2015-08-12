@@ -54,7 +54,7 @@ namespace Cackhand.Core.Scores
 
         private List<ScoreEntry> CreateIntialScoreList()
         {
-            List<ScoreEntry> s = new List<ScoreEntry>()
+            return  new List<ScoreEntry>()
             {
                 // For now, just some defaults
                 new ScoreEntry() { PlayerName="Sid", Score=100 },
@@ -63,8 +63,6 @@ namespace Cackhand.Core.Scores
                 new ScoreEntry() { PlayerName="Norman", Score=70 },
                 new ScoreEntry() { PlayerName="Clyde", Score=60 }
             };
-
-            return s;
         }
     }
 }

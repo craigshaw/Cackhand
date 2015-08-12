@@ -10,8 +10,7 @@ namespace Cackhand.Utilities
     {
         public static void SetCursor(int x, int y)
         {
-            Console.CursorLeft = x;
-            Console.CursorTop = y;
+            Console.SetCursorPosition(x, y);
         }
 
         public static void WriteTextAt(string text, int x, int y)
@@ -31,6 +30,12 @@ namespace Cackhand.Utilities
         {
             SetCursor((Console.WindowWidth / 2) - (text.Length / 2), y);
             Console.Write(text);
+        }
+
+        public static void ClearInputBuffer()
+        {
+            while (Console.KeyAvailable)
+                Console.ReadKey(true);
         }
     }
 }
