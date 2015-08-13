@@ -5,4 +5,4 @@ character on the screen, hit the corresponding key on your keyboard. Repeat ten 
 ![alt text](https://github.com/craigshaw/Cackhand/blob/master/Cackhand/Screenshots/Title.PNG "Title Screen")
 
 
-![alt text](http://gdurl.com/NTv6 "In Game")
+![alt text](https://github.com/craigshaw/Cackhand/blob/master/Cackhand/Screenshots/InGame.PNG "In Game")
