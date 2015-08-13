@@ -83,8 +83,7 @@ namespace Cackhand.Core
             ConsoleUtils.WriteTextAtCenter("Strike fast when you see red", 11);
 
             // Highscores
-            ConsoleUtils.WriteTextAtCenter("Today's high scores:", 15);
-            DisplayHighScores(16);
+            DisplayHighScores(15);
 
             // Version
             Console.ForegroundColor = ThemeManager.Instance.ActiveTheme.TertiaryColour;
@@ -97,7 +96,9 @@ namespace Cackhand.Core
         {
             int yPos = initialYPos;
 
-            foreach(var score in HighScoreTable.Instance.Scores)
+            ConsoleUtils.WriteTextAtCenter("Today's high scores:", yPos++);
+
+            foreach (var score in HighScoreTable.Instance.Scores)
             {
                 string name = score.PlayerName;
                 string scoreStr = score.Score.ToString();

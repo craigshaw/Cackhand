@@ -22,19 +22,20 @@ namespace Cackhand.Core.Scores
             }
         }
 
-        public bool AddScore(string name, int score)
+        public ScoreEntry AddScore(string name, int score)
         {
             if (string.IsNullOrEmpty(name))
                 throw new ArgumentNullException("name");
 
             if (score <= scores[scores.Count - 1].Score)
-                return false;
+                return null;
 
-            scores.Add(new ScoreEntry() { PlayerName = name, Score = score });
+            ScoreEntry newScore = new ScoreEntry() { PlayerName = name, Score = score };
+            scores.Add(newScore);
             scores.Sort();
             scores = scores.Take(5).ToList();
 
-            return true;
+            return newScore;
         }
 
         public int LowestScore
@@ -45,6 +46,11 @@ namespace Cackhand.Core.Scores
         public IEnumerable<ScoreEntry> Scores
         {
             get { return scores;  }
+        }
+
+        public int IndexOf(ScoreEntry score)
+        {
+            return scores.IndexOf(score);
         }
 
         private HighScoreTable()
