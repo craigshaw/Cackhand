@@ -3,14 +3,10 @@ using Cackhand.Core.Themes;
 using Cackhand.Framework;
 using Cackhand.Utilities;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Cackhand.Core
 {
-    internal class TitleScreen : IState
+    internal class TitleScreen : AnimatingBase
     {
         private const string LogoLine1 = @"   ___         _   _                 _ _ ";
         private const string LogoLine2 = @"  / __|__ _ __| |_| |_  __ _ _ _  __| | |";
@@ -23,23 +19,24 @@ namespace Cackhand.Core
         private int inputCooldown = 0;
 
         public TitleScreen(IStateManager stateManager, int lastScore)
+            :base()
         {
             if (stateManager == null)
                 throw new ArgumentNullException("stateManager");
 
             this.stateManager = stateManager;
 
-            if(lastScore > highScore)
+            if (lastScore > highScore)
                 highScore = lastScore;
         }
 
-        public void Initialise()
+        public override void Initialise()
         {
             DisplayTitleScreen();
             ResetInputCooldown();
         }
 
-        public void ProcessFrame()
+        public override void ProcessFrame()
         {
             inputCooldown--;
 
@@ -53,6 +50,8 @@ namespace Cackhand.Core
                 ThemeManager.Instance.NextTheme();
                 DisplayTitleScreen();
             }
+
+            base.ProcessFrame();
         }
 
         private bool KeyIsDownOutsideOfCooldownPeriod(System.Windows.Forms.Keys key)

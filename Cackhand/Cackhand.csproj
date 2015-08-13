@@ -52,6 +52,7 @@
     <Compile Include="Core\Themes\Theme.cs" />
     <Compile Include="Core\Themes\ThemeManager.cs" />
     <Compile Include="Core\TitleScreen.cs" />
+    <Compile Include="Framework\AnimatingBase.cs" />
     <Compile Include="Framework\IStateManager.cs" />
     <Compile Include="Framework\IState.cs" />
     <Compile Include="Program.cs" />
