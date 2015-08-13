@@ -72,7 +72,7 @@ namespace Cackhand.Core
             // Read up to 20 chars or until the player hits enter
             while(true)
             {
-                cki = Console.ReadKey();
+                cki = Console.ReadKey(true);
 
                 if (cki.Key == ConsoleKey.Enter)
                     break;
@@ -81,25 +81,19 @@ namespace Cackhand.Core
                     if (nameBuilder.Length > 0)
                     {
                         nameBuilder.Remove(nameBuilder.Length - 1, 1);
-                        OverwriteAndStepBack();
+                        BackSpace();
                     }
-                    else
-                        Console.CursorLeft = Console.WindowWidth / 2 - 20;
                 }
                 else
                 {
                     // Anything we're not ignoring gets added to the name buffer
-                    if (!isIgnoredKey(cki.Key))
+                    if (!IsIgnoredKey(cki.Key))
                     {
                         nameBuilder.Append(cki.KeyChar);
+                        Console.Write(cki.KeyChar);
 
                         if (nameBuilder.Length >= 20)
                             break;
-                    }
-                    else // If we're ignoring, we have to overwrite what's been written to the console
-                    {
-                        Console.CursorLeft = Console.CursorLeft - 1;
-                        OverwriteAndStepBack();
                     }
                 }
             }
@@ -107,16 +101,18 @@ namespace Cackhand.Core
             return nameBuilder.ToString();
         }
 
-        private void OverwriteAndStepBack()
+        private void BackSpace()
         {
+            Console.CursorLeft = Console.CursorLeft - 1;
             Console.Write(".");
             Console.CursorLeft = Console.CursorLeft - 1;
         }
 
-        private bool isIgnoredKey(ConsoleKey key)
+        private bool IsIgnoredKey(ConsoleKey key)
         {
             return key == ConsoleKey.Delete || key == ConsoleKey.UpArrow || key == ConsoleKey.DownArrow ||
-                key == ConsoleKey.LeftArrow || key == ConsoleKey.RightArrow || key == ConsoleKey.Tab;
+                key == ConsoleKey.LeftArrow || key == ConsoleKey.RightArrow || key == ConsoleKey.Tab || key == ConsoleKey.Home
+                || key == ConsoleKey.End || key == ConsoleKey.PageUp || key == ConsoleKey.PageDown;
         }
     }
 }
