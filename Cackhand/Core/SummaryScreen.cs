@@ -1,4 +1,5 @@
 ﻿using Cackhand.Core.Scores;
+using Cackhand.Core.Themes;
 using Cackhand.Framework;
 using Cackhand.Utilities;
 using System;
@@ -44,6 +45,7 @@ namespace Cackhand.Core
 
         private void DisplaySummary()
         {
+            Console.ForegroundColor = ThemeManager.Instance.ActiveTheme.SecondaryColour;
             ConsoleUtils.WriteTextAtCenter(string.Format("  Well done, you scored {0}  ", score), 9);
 
             if (score > HighScoreTable.Instance.LowestScore)

@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace Cackhand.Framework
 {
-    public abstract class AnimatingBase : IState
+    public abstract class GameStateBase : IState
     {
         private IList<IEnumerator> activeCoroutines;
 
-        public AnimatingBase()
+        public GameStateBase()
         {
             activeCoroutines = new List<IEnumerator>();
         }

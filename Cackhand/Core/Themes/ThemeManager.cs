@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Cackhand.Core.Themes
 {
@@ -15,7 +12,7 @@ namespace Cackhand.Core.Themes
         private ThemeManager() 
         {
             registeredThemes = new List<Theme>();
-            registeredThemes.Add(new Theme { PrimaryColour = ConsoleColor.DarkGreen, SecondaryColour = ConsoleColor.Green, TertiaryColour = ConsoleColor.DarkGray });
+            registeredThemes.Add(new Theme { PrimaryColour = ConsoleColor.Green, SecondaryColour = ConsoleColor.DarkGreen, TertiaryColour = ConsoleColor.DarkGray });
             activeThemeIndex = 0;
         }
         

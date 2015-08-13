@@ -6,7 +6,7 @@ using System;
 
 namespace Cackhand.Core
 {
-    internal class TitleScreen : AnimatingBase
+    internal class TitleScreen : GameStateBase
     {
         private const string LogoLine1 = @"   ___         _   _                 _ _ ";
         private const string LogoLine2 = @"  / __|__ _ __| |_| |_  __ _ _ _  __| | |";
