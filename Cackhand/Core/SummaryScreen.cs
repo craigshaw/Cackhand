@@ -12,7 +12,6 @@ namespace Cackhand.Core
         private readonly IStateManager stateManager;
         private long initialisedTime;
         private int score;
-        private bool requestingPlayerName;
         private bool revertToTitles;
 
         public SummaryScreen(IStateManager stateManager, int score)
@@ -26,9 +25,6 @@ namespace Cackhand.Core
 
         public void Initialise()
         {
-            if (score > HighScoreTable.Instance.LowestScore)
-                requestingPlayerName = true;
-
             initialisedTime = System.Environment.TickCount;
 
             DisplaySummary();
@@ -36,14 +32,11 @@ namespace Cackhand.Core
 
         public void ProcessFrame()
         {
-            if (!requestingPlayerName)
-            {
-                if (System.Environment.TickCount - initialisedTime >= OnScreenDuration)
-                    revertToTitles = true;
+            if (System.Environment.TickCount - initialisedTime >= OnScreenDuration)
+                revertToTitles = true;
 
-                if (KeyboardReader.IsKeyDown(System.Windows.Forms.Keys.Enter))
-                    revertToTitles = true;
-            }
+            if (KeyboardReader.IsKeyDown(System.Windows.Forms.Keys.Enter))
+                revertToTitles = true;
 
             if (revertToTitles)
                 stateManager.RegisterNextState(new TitleScreen(stateManager, score));
@@ -53,7 +46,7 @@ namespace Cackhand.Core
         {
             ConsoleUtils.WriteTextAtCenter(string.Format("  Well done, you scored {0}  ", score), 9);
 
-            if(requestingPlayerName)
+            if (score > HighScoreTable.Instance.LowestScore)
             {
                 ScoreEntry newScore = HighScoreTable.Instance.AddScore(".", score);
 
