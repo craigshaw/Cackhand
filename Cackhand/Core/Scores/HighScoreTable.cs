@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Cackhand.Utilities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,7 @@ namespace Cackhand.Core.Scores
 {
     internal class HighScoreTable
     {
+        private const int HighScoreTableWidth = 40;
         private static HighScoreTable instance;
         private List<ScoreEntry> scores;
 
@@ -69,6 +71,26 @@ namespace Cackhand.Core.Scores
                 new ScoreEntry() { PlayerName="Norman", Score=70 },
                 new ScoreEntry() { PlayerName="Clyde", Score=60 }
             };
+        }
+
+        // Not sure I like this here
+        public static void DisplayHighScoreTable(int initialYPos, string heading)
+        {
+            int yPos = initialYPos;
+
+            ConsoleUtils.WriteTextAtCenter(heading, yPos++);
+
+            foreach (var score in HighScoreTable.Instance.Scores)
+            {
+                string name = score.PlayerName;
+                string scoreStr = score.Score.ToString();
+                string sep = new string('.', HighScoreTableWidth - name.Length - scoreStr.Length);
+                StringBuilder sb = new StringBuilder();
+                sb.Append(string.Format("{{0, -{0}}}", name.Length));
+                sb.Append(sep);
+                sb.Append(string.Format("{{1, {0}}}", scoreStr.Length));
+                ConsoleUtils.WriteTextAtCenter(string.Format(sb.ToString(), score.PlayerName, score.Score), yPos++);
+            }
         }
     }
 }

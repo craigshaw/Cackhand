@@ -58,7 +58,7 @@ namespace Cackhand.Core
                 ScoreEntry newScore = HighScoreTable.Instance.AddScore(".", score);
 
                 ConsoleUtils.WriteTextAtCenter("   That's made it to the highscore table!   ", 10);
-                DisplayHighScores(11);
+                HighScoreTable.DisplayHighScoreTable(11, "Enter your name:");
                 ConsoleUtils.ClearInputBuffer();
 
                 // Set position of cursor based on where in the score table we are
@@ -92,25 +92,6 @@ namespace Cackhand.Core
             }
 
             return nameBuilder.ToString();
-        }
-
-        private void DisplayHighScores(int initialYPos)
-        {
-            int yPos = initialYPos;
-
-            ConsoleUtils.WriteTextAtCenter("Enter your name:", yPos++);
-
-            foreach (var score in HighScoreTable.Instance.Scores)
-            {
-                string name = score.PlayerName;
-                string scoreStr = score.Score.ToString();
-                string sep = new string('.', 40 - name.Length - scoreStr.Length);
-                StringBuilder sb = new StringBuilder();
-                sb.Append(string.Format("{{0, -{0}}}", name.Length));
-                sb.Append(sep);
-                sb.Append(string.Format("{{1, {0}}}", scoreStr.Length));
-                ConsoleUtils.WriteTextAtCenter(string.Format(sb.ToString(), score.PlayerName, score.Score), yPos++);
-            }
         }
     }
 }

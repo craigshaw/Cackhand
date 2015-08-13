@@ -83,32 +83,13 @@ namespace Cackhand.Core
             ConsoleUtils.WriteTextAtCenter("Strike fast when you see red", 11);
 
             // Highscores
-            DisplayHighScores(15);
+            HighScoreTable.DisplayHighScoreTable(15, "Today's high scores:");
 
             // Version
             Console.ForegroundColor = ThemeManager.Instance.ActiveTheme.TertiaryColour;
             string version = string.Format("v{0}", Cackhand.Version);
             ConsoleUtils.WriteTextAt(version, Console.WindowWidth - 1 - version.Length, Console.WindowHeight - 2);
             ConsoleUtils.SetCursor(0, 0);
-        }
-
-        private void DisplayHighScores(int initialYPos)
-        {
-            int yPos = initialYPos;
-
-            ConsoleUtils.WriteTextAtCenter("Today's high scores:", yPos++);
-
-            foreach (var score in HighScoreTable.Instance.Scores)
-            {
-                string name = score.PlayerName;
-                string scoreStr = score.Score.ToString();
-                string sep = new string('.', 40 - name.Length - scoreStr.Length);
-                StringBuilder sb = new StringBuilder();
-                sb.Append(string.Format("{{0, -{0}}}", name.Length));
-                sb.Append(sep);
-                sb.Append(string.Format("{{1, {0}}}", scoreStr.Length));
-                ConsoleUtils.WriteTextAtCenter(string.Format(sb.ToString(), score.PlayerName, score.Score), yPos++);
-            }
         }
     }
 }
