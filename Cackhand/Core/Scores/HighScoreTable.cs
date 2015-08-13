@@ -1,7 +1,9 @@
 ﻿using Cackhand.Utilities;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -9,6 +11,7 @@ namespace Cackhand.Core.Scores
 {
     internal class HighScoreTable
     {
+        private const string ScoresFile = "ch.sav";
         private const int HighScoreTableWidth = 40;
         private static HighScoreTable instance;
         private List<ScoreEntry> scores;
@@ -47,12 +50,21 @@ namespace Cackhand.Core.Scores
 
         public IEnumerable<ScoreEntry> Scores
         {
-            get { return scores;  }
+            get { return scores; }
         }
 
         public int IndexOf(ScoreEntry score)
         {
             return scores.IndexOf(score);
+        }
+
+        public void SaveScores()
+        {
+            using (Stream stream = File.Open(ScoresFile, FileMode.Create))
+            {
+                BinaryFormatter bf = new BinaryFormatter();
+                bf.Serialize(stream, scores);
+            }
         }
 
         private HighScoreTable()
@@ -62,15 +74,26 @@ namespace Cackhand.Core.Scores
 
         private List<ScoreEntry> CreateIntialScoreList()
         {
-            return  new List<ScoreEntry>()
+            if (File.Exists(ScoresFile))
             {
-                // For now, just some defaults
-                new ScoreEntry() { PlayerName="Sid", Score=100 },
-                new ScoreEntry() { PlayerName="Craig", Score=90 },
-                new ScoreEntry() { PlayerName="Keith", Score=80 },
-                new ScoreEntry() { PlayerName="Norman", Score=70 },
-                new ScoreEntry() { PlayerName="Clyde", Score=60 }
-            };
+                using (Stream stream = File.Open(ScoresFile, FileMode.Open))
+                {
+                    BinaryFormatter bf = new BinaryFormatter();
+                    return (List<ScoreEntry>)bf.Deserialize(stream);
+                }
+            }
+            else
+            {
+                return new List<ScoreEntry>()
+                {
+                    // For now, just some defaults
+                    new ScoreEntry() { PlayerName="Sid", Score=100 },
+                    new ScoreEntry() { PlayerName="Craig", Score=90 },
+                    new ScoreEntry() { PlayerName="Whal", Score=80 },
+                    new ScoreEntry() { PlayerName="Rich", Score=70 },
+                    new ScoreEntry() { PlayerName="Norman", Score=60 }
+                };
+            }
         }
 
         // Not sure I like this here

@@ -2,6 +2,7 @@
 
 namespace Cackhand.Core.Scores
 {
+    [Serializable]
     internal class ScoreEntry : IComparable<ScoreEntry>
     {
         public string PlayerName { get; set; }

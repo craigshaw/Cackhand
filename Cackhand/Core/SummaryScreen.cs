@@ -62,6 +62,9 @@ namespace Cackhand.Core
                 Console.SetCursorPosition(Console.WindowWidth / 2 - 20, 12 + idx);
 
                 newScore.PlayerName = GetPlayerName();
+
+                HighScoreTable.Instance.SaveScores();
+
                 revertToTitles = true;
             }
         }
