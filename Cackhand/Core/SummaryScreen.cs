@@ -66,7 +66,6 @@ namespace Cackhand.Core
 
         private string GetPlayerName()
         {
-            int chars = 0;
             StringBuilder nameBuilder = new StringBuilder();
             ConsoleKeyInfo cki;
 
@@ -77,14 +76,47 @@ namespace Cackhand.Core
 
                 if (cki.Key == ConsoleKey.Enter)
                     break;
+                else if (cki.Key == ConsoleKey.Backspace) // Handle backspace cleanly
+                {
+                    if (nameBuilder.Length > 0)
+                    {
+                        nameBuilder.Remove(nameBuilder.Length - 1, 1);
+                        OverwriteAndStepBack();
+                    }
+                    else
+                        Console.CursorLeft = Console.WindowWidth / 2 - 20;
+                }
+                else
+                {
+                    // Anything we're not ignoring gets added to the name buffer
+                    if (!isIgnoredKey(cki.Key))
+                    {
+                        nameBuilder.Append(cki.KeyChar);
 
-                nameBuilder.Append(cki.KeyChar);
-
-                if (++chars >= 20)
-                    break;
+                        if (nameBuilder.Length >= 20)
+                            break;
+                    }
+                    else // If we're ignoring, we have to overwrite what's been written to the console
+                    {
+                        Console.CursorLeft = Console.CursorLeft - 1;
+                        OverwriteAndStepBack();
+                    }
+                }
             }
 
             return nameBuilder.ToString();
+        }
+
+        private void OverwriteAndStepBack()
+        {
+            Console.Write(".");
+            Console.CursorLeft = Console.CursorLeft - 1;
+        }
+
+        private bool isIgnoredKey(ConsoleKey key)
+        {
+            return key == ConsoleKey.Delete || key == ConsoleKey.UpArrow || key == ConsoleKey.DownArrow ||
+                key == ConsoleKey.LeftArrow || key == ConsoleKey.RightArrow || key == ConsoleKey.Tab;
         }
     }
 }
