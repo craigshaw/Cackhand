@@ -54,15 +54,18 @@ namespace Cackhand
 
             Console.Clear();
             while (Console.KeyAvailable) Console.ReadKey(true);
-            Console.WriteLine("Thanks for playing. Press any key to quit...");
+            ConsoleUtils.WriteTextAtCenter("Thanks for playing. Press any key to quit...");
             Console.ReadKey(true);
+            Console.Clear();
+            Console.ResetColor();
         }
 
         private void BootstrapEnvironment()
         {
             // Fix the window and buffer size
+            Console.SetWindowPosition(0, 0);
             Console.SetWindowSize(ConsoleWidth, ConsoleHeight);
-            Console.SetBufferSize(Console.WindowWidth, Console.WindowHeight);
+            Console.SetBufferSize(ConsoleWidth, ConsoleHeight);
 
             // Now disable the maximise button
             IntPtr handle = Process.GetCurrentProcess().MainWindowHandle;
