@@ -62,6 +62,7 @@
     <Compile Include="Utilities\Extensions.cs" />
     <Compile Include="Utilities\FrameCounter.cs" />
     <Compile Include="Utilities\KeyboardReader.cs" />
+    <Compile Include="Utilities\Win32.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

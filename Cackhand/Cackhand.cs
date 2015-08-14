@@ -3,6 +3,7 @@ using Cackhand.Core.Themes;
 using Cackhand.Framework;
 using Cackhand.Utilities;
 using System;
+using System.Diagnostics;
 using System.Threading;
 
 namespace Cackhand
@@ -11,6 +12,8 @@ namespace Cackhand
     {
         public const string Version = "0.6";
         private const int TARGET_FPS = 25;
+        private const int ConsoleWidth = 80;
+        private const int ConsoleHeight = 25;
 
         private IState currentState;
         private IState nextState;
@@ -22,8 +25,8 @@ namespace Cackhand
         {
             bool running = true;
 
+            BootstrapEnvironment();
             BootstrapThemes();
-
             InitialiseTitleScreen();
 
             do
@@ -53,6 +56,19 @@ namespace Cackhand
             while (Console.KeyAvailable) Console.ReadKey(true);
             Console.WriteLine("Thanks for playing. Press any key to quit...");
             Console.ReadKey(true);
+        }
+
+        private void BootstrapEnvironment()
+        {
+            // Fix the window and buffer size
+            Console.SetWindowSize(ConsoleWidth, ConsoleHeight);
+            Console.SetBufferSize(Console.WindowWidth, Console.WindowHeight);
+
+            // Now disable the maximise button
+            IntPtr handle = Process.GetCurrentProcess().MainWindowHandle;
+            int style = Win32.GetWindowLong(handle, -16);
+            style &= ~(Win32.WS_MAXIMIZEBOX | Win32.WS_SIZEBOX); // Turn off maximise and resize handles
+            Win32.SetWindowLong(handle, -16, style);
         }
 
         private void InitialiseTitleScreen()
