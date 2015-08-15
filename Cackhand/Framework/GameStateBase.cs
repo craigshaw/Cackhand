@@ -7,13 +7,25 @@ using System.Threading.Tasks;
 
 namespace Cackhand.Framework
 {
-    public abstract class GameStateBase : IState
+    internal abstract class GameStateBase : IState
     {
         private IList<IEnumerator> activeCoroutines;
+        private readonly IStateManager stateManager;
 
-        public GameStateBase()
+        public GameStateBase(IStateManager stateManager)
         {
+            if (stateManager == null)
+                throw new ArgumentNullException("stateManager");
+
+            this.stateManager = stateManager;
             activeCoroutines = new List<IEnumerator>();
+        }
+
+        protected IStateManager StateManager { get { return stateManager; } }
+
+        protected void RegisterNextState(IState nextState)
+        {
+            stateManager.RegisterNextState(nextState);
         }
 
         protected void StartCoroutine(IEnumerator coroutine)

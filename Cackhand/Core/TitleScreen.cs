@@ -14,20 +14,12 @@ namespace Cackhand.Core
         private const string LogoLine4 = @"  \___\__,_\__|_\_\_||_\__,_|_||_\__,_(_)";
         private const int InputCooldownFrames = 10;
 
-        private readonly IStateManager stateManager;
-        private static int highScore = 0;
         private int inputCooldown = 0;
 
-        public TitleScreen(IStateManager stateManager, int lastScore)
-            :base()
+        public TitleScreen(IStateManager stateManager)
+            :base(stateManager)
         {
-            if (stateManager == null)
-                throw new ArgumentNullException("stateManager");
 
-            this.stateManager = stateManager;
-
-            if (lastScore > highScore)
-                highScore = lastScore;
         }
 
         public override void Initialise()
@@ -42,7 +34,7 @@ namespace Cackhand.Core
 
             // Handle input
             if(KeyIsDownOutsideOfCooldownPeriod(System.Windows.Forms.Keys.Enter))
-                stateManager.RegisterNextState(new CackhandGame(stateManager));
+                RegisterNextState(new CackhandGame(StateManager));
 
             if (KeyIsDownOutsideOfCooldownPeriod(System.Windows.Forms.Keys.T))
             {

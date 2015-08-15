@@ -6,13 +6,12 @@ using System.Windows.Forms;
 
 namespace Cackhand.Core
 {
-    internal class CackhandGame : IState
+    internal class CackhandGame : GameStateBase
     {
         private const int FramesToDisplay = 2;
         private const int NumberOfRounds = 10;
         private const int NumberOfOnScreenScharacters = 20;
 
-        private readonly IStateManager stateManager;
         private BoardManager boardManager;
         private FrameCounter frameCounter = new FrameCounter();
         private Random random = new Random(Guid.NewGuid().GetHashCode());
@@ -28,14 +27,12 @@ namespace Cackhand.Core
         private float bonusMultiplier;
 
         public CackhandGame(IStateManager stateManager)
+            :base(stateManager)
         {
-            if (stateManager == null)
-                throw new ArgumentNullException("stateManager");
 
-            this.stateManager = stateManager;
         }
 
-        public void Initialise()
+        public override void Initialise()
         {
             Console.Clear();
             Console.ForegroundColor = ThemeManager.Instance.ActiveTheme.PrimaryColour;
@@ -45,7 +42,7 @@ namespace Cackhand.Core
             boardManager = new BoardManager(Console.WindowHeight - 6, Console.WindowWidth, 0, 3, NumberOfOnScreenScharacters);
         }
 
-        public void ProcessFrame()
+        public override void ProcessFrame()
         {
             if (frameCount == 0)
                 ShowChrome();
@@ -80,7 +77,7 @@ namespace Cackhand.Core
                     ShowGameStats(lastReactionTime);
 
                     if (roundsPlayed == NumberOfRounds)
-                        stateManager.RegisterNextState(new SummaryScreen(stateManager, score)); // Show final score
+                        RegisterNextState(new SummaryScreen(StateManager, score)); // Show final score
                 }
             }
 
@@ -88,6 +85,8 @@ namespace Cackhand.Core
             ShowScore();
 
             frameCount++;
+
+            base.ProcessFrame();
         }
 
         private int CalculateScore(int lastReactionTime)

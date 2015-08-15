@@ -49,6 +49,7 @@
     <Compile Include="Core\GameObjects\TextTicker.cs" />
     <Compile Include="Core\Scores\HighScoreTable.cs" />
     <Compile Include="Core\Scores\ScoreEntry.cs" />
+    <Compile Include="Core\SplashScreen.cs" />
     <Compile Include="Core\SummaryScreen.cs" />
     <Compile Include="Core\Themes\Theme.cs" />
     <Compile Include="Core\Themes\ThemeManager.cs" />

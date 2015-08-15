@@ -7,31 +7,27 @@ using System.Text;
 
 namespace Cackhand.Core
 {
-    internal class SummaryScreen : IState
+    internal class SummaryScreen : GameStateBase
     {
         private const int OnScreenDuration = 10000; // 10 Seconds
-        private readonly IStateManager stateManager;
         private long initialisedTime;
         private int score;
         private bool revertToTitles;
 
         public SummaryScreen(IStateManager stateManager, int score)
+            :base(stateManager)
         {
-            if (stateManager == null)
-                throw new ArgumentNullException("stateManager");
-
-            this.stateManager = stateManager;
             this.score = score;
         }
 
-        public void Initialise()
+        public override void Initialise()
         {
             initialisedTime = System.Environment.TickCount;
 
             DisplaySummary();
         }
 
-        public void ProcessFrame()
+        public override void ProcessFrame()
         {
             if (System.Environment.TickCount - initialisedTime >= OnScreenDuration)
                 revertToTitles = true;
@@ -40,7 +36,9 @@ namespace Cackhand.Core
                 revertToTitles = true;
 
             if (revertToTitles)
-                stateManager.RegisterNextState(new TitleScreen(stateManager, score));
+                RegisterNextState(new TitleScreen(StateManager));
+
+            base.ProcessFrame();
         }
 
         private void DisplaySummary()

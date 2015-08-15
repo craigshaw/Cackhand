@@ -27,7 +27,7 @@ namespace Cackhand
 
             BootstrapEnvironment();
             BootstrapThemes();
-            InitialiseTitleScreen();
+            InitialiseSplashScreen();
 
             do
             {
@@ -74,9 +74,9 @@ namespace Cackhand
             Win32.SetWindowLong(handle, -16, style);
         }
 
-        private void InitialiseTitleScreen()
+        private void InitialiseSplashScreen()
         {
-            currentState = new TitleScreen(this, 0);
+            currentState = new SplashScreen(this);
             currentState.Initialise();
         }
 
