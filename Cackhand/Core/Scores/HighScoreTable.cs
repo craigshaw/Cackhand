@@ -20,10 +20,7 @@ namespace Cackhand.Core.Scores
         {
             get
             {
-                if (instance == null)
-                    instance = new HighScoreTable();
-
-                return instance;
+                return instance ?? (instance = new HighScoreTable());
             }
         }
 

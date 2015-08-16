@@ -20,10 +20,7 @@ namespace Cackhand.Core.Themes
         {
             get
             {
-                if (instance == null)
-                    instance = new ThemeManager();
-
-                return instance;
+                return instance ?? (instance = new ThemeManager());
             }
         }
 
