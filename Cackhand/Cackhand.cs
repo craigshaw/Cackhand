@@ -72,6 +72,8 @@ namespace Cackhand
             int style = Win32.GetWindowLong(handle, -16);
             style &= ~(Win32.WS_MAXIMIZEBOX | Win32.WS_SIZEBOX); // Turn off maximise and resize handles
             Win32.SetWindowLong(handle, -16, style);
+
+            Console.CursorVisible = false;
         }
 
         private void InitialiseSplashScreen()
