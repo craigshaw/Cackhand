@@ -1,13 +1,14 @@
 ﻿using Cackhand.Core.Scores;
 using Cackhand.Core.Themes;
-using Cackhand.Framework;
 using Cackhand.Utilities;
+using Gater.Framework;
+using Gater.Utilities;
 using System;
 using System.Text;
 
 namespace Cackhand.Core
 {
-    internal class SummaryScreen : GameStateBase
+    internal class SummaryScreen : GameState
     {
         private const int OnScreenDuration = 10000; // 10 Seconds
         private long initialisedTime;
@@ -15,7 +16,7 @@ namespace Cackhand.Core
         private bool revertToTitles;
 
         public SummaryScreen(IStateManager stateManager, int score)
-            :base(stateManager)
+            : base(stateManager)
         {
             this.score = score;
         }
@@ -73,7 +74,7 @@ namespace Cackhand.Core
             ConsoleKeyInfo cki;
 
             // Read up to 20 chars or until the player hits enter
-            while(true)
+            while (true)
             {
                 cki = Console.ReadKey(true);
 

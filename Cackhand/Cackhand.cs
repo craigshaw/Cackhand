@@ -1,63 +1,42 @@
 ﻿using Cackhand.Core;
 using Cackhand.Core.Themes;
-using Cackhand.Framework;
-using Cackhand.Utilities;
+using Gater.Environment;
+using Gater.Framework;
+using Gater.Utilities;
 using System;
 using System.Diagnostics;
 using System.Threading;
 
 namespace Cackhand
 {
-    internal class Cackhand : IStateManager
+    internal class Cackhand : Game
     {
         public const string Version = "0.6";
         private const int TARGET_FPS = 25;
         private const int ConsoleWidth = 80;
         private const int ConsoleHeight = 25;
+        private long _frameStart;
 
-        private IState currentState;
-        private IState nextState;
-
-        /// <summary>
-        /// Main game loop
-        /// </summary>
-        public void Run()
+        protected override IState InitialiseGame()
         {
-            bool running = true;
-
             BootstrapEnvironment();
             BootstrapThemes();
-            InitialiseSplashScreen();
+            return new TitleScreen(this);
+        }
 
-            do
-            {
-                long frameStart = System.Environment.TickCount;
+        protected override void PreProcessFrame()
+        {
+            _frameStart = Environment.TickCount;
+        }
 
-                // Process frame ... in this console context, we'll assume this processes input, logic and drawing
-                currentState.ProcessFrame();
+        protected override void PostProcessFrame()
+        {
+            if (KeyboardReader.IsKeyDown(System.Windows.Forms.Keys.Escape))
+                Running = false;
 
-                // Update state if we've been asked to
-                if(nextState != null)
-                {
-                    currentState = nextState;
-                    nextState.Initialise();
-                    nextState = null;
-                }
-
-                if (KeyboardReader.IsKeyDown(System.Windows.Forms.Keys.Escape))
-                    running = false;
-
-                TimeSpan framePause = TimeSpan.FromMilliseconds(frameStart + (1000 / TARGET_FPS) - System.Environment.TickCount);
-                if (framePause.Milliseconds > 0)
-                    Thread.Sleep(framePause);
-            } while (running);
-
-            Console.Clear();
-            while (Console.KeyAvailable) Console.ReadKey(true);
-            ConsoleUtils.WriteTextAtCenter("Thanks for playing. Press any key to quit...");
-            Console.ReadKey(true);
-            Console.Clear();
-            Console.ResetColor();
+            TimeSpan framePause = TimeSpan.FromMilliseconds(_frameStart + (1000 / TARGET_FPS) - System.Environment.TickCount);
+            if (framePause.Milliseconds > 0)
+                Thread.Sleep(framePause);
         }
 
         private void BootstrapEnvironment()
@@ -76,26 +55,12 @@ namespace Cackhand
             Console.CursorVisible = false;
         }
 
-        private void InitialiseSplashScreen()
-        {
-            currentState = new SplashScreen(this);
-            currentState.Initialise();
-        }
-
         private void BootstrapThemes()
         {
             // Add custom themes to the manager
             ThemeManager.Instance.RegisterTheme(new Theme { PrimaryColour = ConsoleColor.DarkRed, SecondaryColour = ConsoleColor.Red, TertiaryColour = ConsoleColor.DarkMagenta });
             ThemeManager.Instance.RegisterTheme(new Theme { PrimaryColour = ConsoleColor.DarkCyan, SecondaryColour = ConsoleColor.Cyan, TertiaryColour = ConsoleColor.DarkGray });
             ThemeManager.Instance.RegisterTheme(new Theme { PrimaryColour = ConsoleColor.DarkBlue, SecondaryColour = ConsoleColor.Blue, TertiaryColour = ConsoleColor.White });
-        }
-
-        public void RegisterNextState(IState nextState)
-        {
-            if (nextState == null)
-                throw new ArgumentNullException("nextState");
-
-            this.nextState = nextState;
         }
     }
 }

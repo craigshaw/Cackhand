@@ -1,12 +1,13 @@
 ﻿using Cackhand.Core.Themes;
-using Cackhand.Framework;
 using Cackhand.Utilities;
+using Gater.Framework;
+using Gater.Utilities;
 using System;
 using System.Windows.Forms;
 
 namespace Cackhand.Core
 {
-    internal class CackhandGame : GameStateBase
+    internal class CackhandGame : GameState
     {
         private const int FramesToDisplay = 2;
         private const int NumberOfRounds = 10;
@@ -27,7 +28,7 @@ namespace Cackhand.Core
         private float bonusMultiplier;
 
         public CackhandGame(IStateManager stateManager)
-            :base(stateManager)
+            : base(stateManager)
         {
 
         }
@@ -58,7 +59,7 @@ namespace Cackhand.Core
                 if (KeyboardReader.IsKeyDown((Keys)(byte)char.ToUpper(boardManager.Target.Character)))
                 {
                     // Calculate score based on duration to hit
-                    long lastReactionTime = System.Environment.TickCount - ticksAtTargetMatched;
+                    long lastReactionTime = Environment.TickCount - ticksAtTargetMatched;
 
                     score += CalculateScore((int)lastReactionTime);
 
@@ -104,7 +105,7 @@ namespace Cackhand.Core
 
         private void SetNextTargetFrameDelta()
         {
-            nextFrameToGenerateTarget = random.Next(250);
+            nextFrameToGenerateTarget = random.Next(125);
         }
 
         private void GenerateBoardSnapshot()
@@ -115,7 +116,7 @@ namespace Cackhand.Core
             if (boardManager.Target == null && frameCount >= nextFrameToGenerateTarget)
             {
                 boardManager.AddTargetToBoard();
-                ticksAtTargetMatched = System.Environment.TickCount;
+                ticksAtTargetMatched = Environment.TickCount;
             }
         }
 

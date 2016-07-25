@@ -1,12 +1,13 @@
 ﻿using Cackhand.Core.Scores;
 using Cackhand.Core.Themes;
-using Cackhand.Framework;
 using Cackhand.Utilities;
+using Gater.Framework;
+using Gater.Utilities;
 using System;
 
 namespace Cackhand.Core
 {
-    internal class TitleScreen : GameStateBase
+    internal class TitleScreen : GameState
     {
         private const string LogoLine1 = @"   ___         _   _                 _ _ ";
         private const string LogoLine2 = @"  / __|__ _ __| |_| |_  __ _ _ _  __| | |";
@@ -17,7 +18,7 @@ namespace Cackhand.Core
         private int inputCooldown = 0;
 
         public TitleScreen(IStateManager stateManager)
-            :base(stateManager)
+            : base(stateManager)
         {
 
         }
@@ -33,7 +34,7 @@ namespace Cackhand.Core
             inputCooldown--;
 
             // Handle input
-            if(KeyIsDownOutsideOfCooldownPeriod(System.Windows.Forms.Keys.Enter))
+            if (KeyIsDownOutsideOfCooldownPeriod(System.Windows.Forms.Keys.Enter))
                 RegisterNextState(new CackhandGame(StateManager));
 
             if (KeyIsDownOutsideOfCooldownPeriod(System.Windows.Forms.Keys.T))

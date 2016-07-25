@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Cackhand.Utilities;
+using System;
 
 namespace Cackhand
 {
@@ -11,6 +8,13 @@ namespace Cackhand
         static void Main(string[] args)
         {
             new Cackhand().Run();
+
+            Console.Clear();
+            while (Console.KeyAvailable) Console.ReadKey(true);
+            ConsoleUtils.WriteTextAtCenter("Thanks for playing. Press any key to quit...");
+            Console.ReadKey(true);
+            Console.Clear();
+            Console.ResetColor();
         }
     }
 }

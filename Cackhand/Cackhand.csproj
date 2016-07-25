@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Cackhand</RootNamespace>
     <AssemblyName>Cackhand</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -32,6 +33,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Gater, Version=0.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Gater.0.1.0\lib\net461\Gater.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Windows.Forms" />
@@ -49,24 +54,19 @@
     <Compile Include="Core\GameObjects\TextTicker.cs" />
     <Compile Include="Core\Scores\HighScoreTable.cs" />
     <Compile Include="Core\Scores\ScoreEntry.cs" />
-    <Compile Include="Core\SplashScreen.cs" />
     <Compile Include="Core\SummaryScreen.cs" />
     <Compile Include="Core\Themes\Theme.cs" />
     <Compile Include="Core\Themes\ThemeManager.cs" />
     <Compile Include="Core\TitleScreen.cs" />
-    <Compile Include="Framework\GameStateBase.cs" />
-    <Compile Include="Framework\IStateManager.cs" />
-    <Compile Include="Framework\IState.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utilities\ConsoleUtils.cs" />
     <Compile Include="Utilities\Extensions.cs" />
     <Compile Include="Utilities\FrameCounter.cs" />
-    <Compile Include="Utilities\KeyboardReader.cs" />
-    <Compile Include="Utilities\Win32.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
